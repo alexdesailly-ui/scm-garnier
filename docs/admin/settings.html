@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Paramètres - Administration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+<aside class="sidebar">
+  <div class="sidebar-logo"><span style="font-size:1.3rem">&#9764;</span> Administration</div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg> Tableau de bord</a>
+    <a href="appointments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg> Rendez-vous</a>
+    <a href="contacts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Contacts / Équipe</a>
+    <a href="settings.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Paramètres</a>
+    <a href="login.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Déconnexion</a>
+  </nav>
+</aside>
+<div class="main">
+<div class="top-bar"><h1>Paramètres</h1><div class="top-bar-right"><span>Administrateur</span> <a href="../index.html" target="_blank">Voir le site</a></div></div>
+
+<div id="save-msg" class="alert alert-success" style="display:none">Paramètres enregistrés avec succès.</div>
+
+<form class="admin-form" onsubmit="event.preventDefault();document.getElementById('save-msg').style.display='block';setTimeout(()=>document.getElementById('save-msg').style.display='none',3000);window.scrollTo({top:0,behavior:'smooth'})">
+
+<div class="card">
+<h2>Informations du cabinet</h2>
+<label>Nom du cabinet</label>
+<input type="text" value="Cabinet Infirmier Garnier">
+<label>Description</label>
+<textarea rows="2">Cabinet infirmier à Nice - Soins à domicile et au cabinet</textarea>
+<label>Adresse</label>
+<input type="text" value="123 Avenue Jean Médecin, 06000 Nice">
+<label>Téléphone</label>
+<input type="tel" value="04 93 00 00 00">
+<label>Email</label>
+<input type="email" value="contact@cabinet-garnier.fr">
+<label>Horaires d'ouverture</label>
+<input type="text" value="Lundi - Vendredi : 7h00 - 19h00 | Samedi : 8h00 - 12h00">
+</div>
+
+<div class="card">
+<h2>Réseaux sociaux</h2>
+<label>URL Facebook</label>
+<input type="url" placeholder="https://facebook.com/cabinet-garnier">
+<label>URL Instagram</label>
+<input type="url" placeholder="https://instagram.com/cabinet_garnier">
+<label>Numéro WhatsApp (international)</label>
+<input type="tel" value="+33612345678" placeholder="+33612345678">
+</div>
+
+<div class="card">
+<h2>Paramètres de rendez-vous</h2>
+<div class="form-row">
+<div>
+<label>Durée d'un créneau (minutes)</label>
+<input type="number" value="30" min="10" max="120">
+</div>
+<div>
+<label>Jours de réservation à l'avance</label>
+<input type="number" value="30" min="1" max="365">
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Sécurité & RGPD</h2>
+<table>
+<tr><td><strong>Chiffrement données</strong></td><td><span class="badge badge-confirmed">AES-256 actif</span></td></tr>
+<tr><td><strong>Hachage mots de passe</strong></td><td><span class="badge badge-confirmed">Argon2id</span></td></tr>
+<tr><td><strong>Protection CSRF</strong></td><td><span class="badge badge-confirmed">Actif</span></td></tr>
+<tr><td><strong>Rate limiting login</strong></td><td><span class="badge badge-confirmed">5 tentatives / 15 min</span></td></tr>
+<tr><td><strong>Audit log</strong></td><td><span class="badge badge-confirmed">Actif</span></td></tr>
+<tr><td><strong>Sessions sécurisées</strong></td><td><span class="badge badge-confirmed">HttpOnly + SameSite</span></td></tr>
+</table>
+</div>
+
+<button type="submit" class="btn btn-primary" style="margin-top:1rem">Enregistrer les modifications</button>
+</form>
+</div>
+</body>
+</html>

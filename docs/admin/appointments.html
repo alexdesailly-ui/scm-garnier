@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rendez-vous - Administration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+<aside class="sidebar">
+  <div class="sidebar-logo"><span style="font-size:1.3rem">&#9764;</span> Administration</div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg> Tableau de bord</a>
+    <a href="appointments.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg> Rendez-vous</a>
+    <a href="contacts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Contacts / Équipe</a>
+    <a href="settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Paramètres</a>
+    <a href="login.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Déconnexion</a>
+  </nav>
+</aside>
+<div class="main">
+<div class="top-bar"><h1>Rendez-vous</h1><div class="top-bar-right"><span>Administrateur</span> <a href="../index.html" target="_blank">Voir le site</a></div></div>
+
+<div class="filter-bar">
+  <a href="#" class="active" onclick="filterRdv('all',this)">Tous (12)</a>
+  <a href="#" onclick="filterRdv('today',this)">Aujourd'hui (3)</a>
+  <a href="#" onclick="filterRdv('upcoming',this)">À venir (5)</a>
+  <a href="#" onclick="filterRdv('pending',this)">En attente (7)</a>
+</div>
+
+<div class="card">
+<h2>Rendez-vous (12)</h2>
+<div style="overflow-x:auto">
+<table>
+<thead><tr><th>Réf.</th><th>Patient</th><th>Contact</th><th>Soin</th><th>Date</th><th>Heure</th><th>Infirmier</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody>
+<tr data-status="pending" data-date="2026-04-20">
+  <td><strong>RDV-A1B2C3D4</strong></td><td>Martin Dupont</td><td style="font-size:.8rem">06 12 34 56 78<br>martin@email.com</td><td>Prélèvement sanguin</td><td>2026-04-20</td><td>08h00</td><td>Sophie Garnier</td>
+  <td><span class="badge badge-pending">En attente</span></td>
+  <td class="actions" style="white-space:nowrap"><button class="btn btn-primary btn-sm" onclick="demoStatus(this,'confirmed')">Confirmer</button> <button class="btn btn-danger btn-sm" onclick="demoStatus(this,'cancelled')">Annuler</button></td>
+</tr>
+<tr data-status="pending" data-date="2026-04-20">
+  <td><strong>RDV-E5F6G7H8</strong></td><td>Claire Bernard</td><td style="font-size:.8rem">06 98 76 54 32<br>claire@email.com</td><td>Injection</td><td>2026-04-20</td><td>09h30</td><td>Marc Dubois</td>
+  <td><span class="badge badge-pending">En attente</span></td>
+  <td class="actions" style="white-space:nowrap"><button class="btn btn-primary btn-sm" onclick="demoStatus(this,'confirmed')">Confirmer</button> <button class="btn btn-danger btn-sm" onclick="demoStatus(this,'cancelled')">Annuler</button></td>
+</tr>
+<tr data-status="confirmed" data-date="2026-04-19">
+  <td><strong>RDV-I9J0K1L2</strong></td><td>Paul Lefevre</td><td style="font-size:.8rem">06 55 44 33 22<br>paul@email.com</td><td>Pansement</td><td>2026-04-19</td><td>11h00</td><td>Laura Martin</td>
+  <td><span class="badge badge-confirmed">Confirmé</span></td>
+  <td class="actions"><button class="btn btn-outline btn-sm" onclick="demoStatus(this,'completed')">Terminer</button></td>
+</tr>
+<tr data-status="pending" data-date="2026-04-19">
+  <td><strong>RDV-M3N4O5P6</strong></td><td>Sophie Moreau</td><td style="font-size:.8rem">06 11 22 33 44<br>sophie@email.com</td><td>Soins de nursing <em>(domicile)</em></td><td>2026-04-19</td><td>14h00</td><td>Sophie Garnier</td>
+  <td><span class="badge badge-pending">En attente</span></td>
+  <td class="actions" style="white-space:nowrap"><button class="btn btn-primary btn-sm" onclick="demoStatus(this,'confirmed')">Confirmer</button> <button class="btn btn-danger btn-sm" onclick="demoStatus(this,'cancelled')">Annuler</button></td>
+</tr>
+<tr data-status="completed" data-date="2026-04-17">
+  <td><strong>RDV-Q7R8S9T0</strong></td><td>Jean Petit</td><td style="font-size:.8rem">06 77 88 99 00<br>jean@email.com</td><td>Vaccination</td><td>2026-04-17</td><td>10h30</td><td>Marc Dubois</td>
+  <td><span class="badge badge-completed">Terminé</span></td>
+  <td class="actions">—</td>
+</tr>
+<tr data-status="cancelled" data-date="2026-04-16">
+  <td><strong>RDV-U1V2W3X4</strong></td><td>Marie Laurent</td><td style="font-size:.8rem">06 44 55 66 77<br>marie@email.com</td><td>Suivi diabète</td><td>2026-04-16</td><td>08h30</td><td>Laura Martin</td>
+  <td><span class="badge badge-cancelled">Annulé</span></td>
+  <td class="actions">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<script>
+function demoStatus(btn,status){
+  const row=btn.closest('tr');
+  const badge=row.querySelector('.badge');
+  const labels={confirmed:'Confirmé',completed:'Terminé',cancelled:'Annulé',pending:'En attente'};
+  const classes={confirmed:'badge-confirmed',completed:'badge-completed',cancelled:'badge-cancelled',pending:'badge-pending'};
+  badge.className='badge '+classes[status];
+  badge.textContent=labels[status];
+  row.dataset.status=status;
+  if(status==='completed'||status==='cancelled')row.querySelector('.actions').innerHTML='—';
+  else if(status==='confirmed')row.querySelector('.actions').innerHTML='<button class="btn btn-outline btn-sm" onclick="demoStatus(this,\'completed\')">Terminer</button>';
+}
+function filterRdv(filter,el){
+  document.querySelectorAll('.filter-bar a').forEach(a=>a.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('tbody tr').forEach(function(row){
+    if(filter==='all')row.style.display='';
+    else if(filter==='pending')row.style.display=row.dataset.status==='pending'?'':'none';
+    else if(filter==='today')row.style.display=row.dataset.date==='2026-04-18'?'':'none';
+    else if(filter==='upcoming')row.style.display=row.dataset.date>='2026-04-18'&&(row.dataset.status==='pending'||row.dataset.status==='confirmed')?'':'none';
+  });
+  return false;
+}
+</script>
+</body>
+</html>

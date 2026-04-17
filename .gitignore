@@ -1,0 +1,21 @@
+# Hostinger local config (contains DB credentials)
+env.php
+
+# Uploads
+uploads/
+!uploads/.gitkeep
+
+# Logs
+*.log
+error_log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Install script (should be deleted after setup)
+# install.php

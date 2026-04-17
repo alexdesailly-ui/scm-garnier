@@ -1,49 +1,67 @@
-# Security headers
+# SCM Garnier Infirmier - Hostinger / LiteSpeed compatible
+
+# Security headers (LiteSpeed + Apache)
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
     Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
 # Block access to sensitive files
-<FilesMatch "\.(env|log|sql|bak|config)$">
+<FilesMatch "\.(env|log|sql|bak|config|example\.php)$">
     Require all denied
 </FilesMatch>
 
-# Block access to includes directory
+# Block env.php explicitly
+<Files "env.php">
+    Require all denied
+</Files>
+
+# Rewrite rules (LiteSpeed compatible)
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Block direct access to includes
     RewriteRule ^includes/ - [F,L]
     RewriteRule ^admin/includes/ - [F,L]
 
-    # Force HTTPS (uncomment in production)
-    # RewriteCond %{HTTPS} off
-    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Block access to docs/ (GitHub Pages only)
+    RewriteRule ^docs/ - [F,L]
 
-    # Default index
+    # Force HTTPS (Hostinger SSL)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Remove .php extension (clean URLs)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
+
     DirectoryIndex index.php
-</IfModule>
-
-# PHP settings
-<IfModule mod_php.c>
-    php_value session.cookie_httponly 1
-    php_value session.cookie_samesite "Lax"
-    php_value upload_max_filesize 2M
-    php_value post_max_size 8M
-    php_value max_execution_time 30
 </IfModule>
 
 # Disable directory listing
 Options -Indexes
 
-# Cache static assets
+# Disable server signature
+ServerSignature Off
+
+# Cache static assets (LiteSpeed compatible)
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/png "access plus 1 month"
-    ExpiresByType image/jpeg "access plus 1 month"
-    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Gzip compression (LiteSpeed handles this natively but fallback)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
 </IfModule>

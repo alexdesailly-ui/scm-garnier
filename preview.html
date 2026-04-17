@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SCM Garnier Infirmier - Prévisualisation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+.demo-banner{background:#f59e0b;color:#fff;text-align:center;padding:.5rem;font-size:.85rem;font-weight:600}
+.demo-nav{background:#1e293b;padding:.75rem 0}
+.demo-nav .container{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.demo-nav a{color:#fff;padding:.4rem 1rem;border-radius:6px;font-size:.85rem;font-weight:500;transition:background .2s;text-decoration:none}
+.demo-nav a:hover{background:rgba(255,255,255,.15)}
+.demo-nav a.active{background:#0d6e6e}
+.demo-section{padding:2rem 0;border-bottom:1px solid var(--c-border)}
+.demo-section h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--c-primary);margin-bottom:1rem}
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem}
+.demo-card{background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.demo-card h3{font-size:1rem;margin-bottom:.5rem}
+.demo-card p{font-size:.9rem;color:var(--c-muted)}
+.demo-badge{display:inline-block;padding:.2rem .6rem;border-radius:12px;font-size:.7rem;font-weight:600;margin-bottom:.5rem}
+.demo-ok{background:#d1fae5;color:#065f46}
+.demo-info{background:#dbeafe;color:#1e40af}
+.color-row{display:flex;gap:.5rem;margin:.5rem 0}
+.color-swatch{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">MODE PRÉVISUALISATION — Cette page est une démo statique du projet SCM Garnier Infirmier</div>
+
+<div class="demo-nav">
+<div class="container">
+  <span style="color:#fff;font-weight:700">&#9764; SCM Garnier</span>
+  <div>
+    <a href="#accueil" class="active">Accueil</a>
+    <a href="#rdv">Rendez-vous</a>
+    <a href="#prevention">Prévention</a>
+    <a href="#contact">Contact</a>
+    <a href="#admin">Admin</a>
+    <a href="#archi">Architecture</a>
+  </div>
+</div>
+</div>
+
+<div class="container">
+
+<!-- ACCUEIL -->
+<div class="demo-section" id="accueil">
+<h2>1. Page d'accueil</h2>
+<p>Hero immersif, services, CTA réservation, équipe, aperçu prévention.</p>
+
+<div style="background:linear-gradient(135deg,#0d6e6e,#064e4e);border-radius:16px;padding:3rem 2rem;color:#fff;margin:1rem 0">
+  <span style="background:rgba(255,255,255,.15);padding:.3rem 1rem;border-radius:20px;font-size:.8rem">Cabinet Infirmier &middot; Nice</span>
+  <h1 style="font-family:'Playfair Display',serif;font-size:2.2rem;margin:.75rem 0">Des soins infirmiers<br><span style="color:#5eead4">professionnels et humains</span></h1>
+  <p style="opacity:.85;max-width:500px;margin-bottom:1.5rem">Notre équipe d'infirmiers diplômés vous accompagne avec bienveillance, au cabinet ou à domicile.</p>
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+    <span class="btn btn-white">Prendre rendez-vous</span>
+    <span class="btn btn-outline-white">Appeler</span>
+  </div>
+  <div style="display:flex;gap:1.5rem;margin-top:1.5rem;font-size:.85rem;opacity:.8">
+    <span>&#10003; Diplômés d'État</span>
+    <span>&#128737; Conventionnés</span>
+    <span>&#128336; 7j/7</span>
+  </div>
+</div>
+
+<h3 style="margin:1.5rem 0 .5rem">Services</h3>
+<div class="demo-grid">
+  <div class="demo-card"><h3>&#128151; Soins à domicile</h3><p>Injections, pansements, perfusions, nursing à domicile.</p></div>
+  <div class="demo-card"><h3>&#128137; Prélèvements sanguins</h3><p>Prises de sang à jeun, bilans complets.</p></div>
+  <div class="demo-card"><h3>&#128203; Suivi des traitements</h3><p>Anticoagulants, insulinothérapie, post-opératoire.</p></div>
+  <div class="demo-card"><h3>&#129657; Pansements</h3><p>Pansements complexes, escarres, cicatrisation.</p></div>
+  <div class="demo-card"><h3>&#128101; Soins de nursing</h3><p>Toilettes, mobilisation, alimentation.</p></div>
+  <div class="demo-card"><h3>&#128200; Prévention santé</h3><p>Éducation thérapeutique, dépistage, vaccination.</p></div>
+</div>
+</div>
+
+<!-- RENDEZ-VOUS -->
+<div class="demo-section" id="rdv">
+<h2>2. Réservation de rendez-vous</h2>
+<p>Parcours e-commerce en 4 étapes : soin &rarr; créneau &rarr; infos &rarr; confirmation.</p>
+
+<div style="display:flex;align-items:center;justify-content:center;gap:0;margin:2rem 0">
+  <div style="text-align:center">
+    <div style="width:40px;height:40px;border-radius:50%;background:#0d6e6e;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto .3rem;font-weight:700">1</div>
+    <span style="font-size:.75rem;color:#64748b">Type de soin</span>
+  </div>
+  <div style="width:60px;height:2px;background:#0d6e6e;margin:0 .3rem"></div>
+  <div style="text-align:center">
+    <div style="width:40px;height:40px;border-radius:50%;background:#0d6e6e;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto .3rem;font-weight:700">2</div>
+    <span style="font-size:.75rem;color:#64748b">Date & heure</span>
+  </div>
+  <div style="width:60px;height:2px;background:#e2e8f0;margin:0 .3rem"></div>
+  <div style="text-align:center">
+    <div style="width:40px;height:40px;border-radius:50%;background:#e2e8f0;color:#64748b;display:flex;align-items:center;justify-content:center;margin:0 auto .3rem;font-weight:700">3</div>
+    <span style="font-size:.75rem;color:#64748b">Informations</span>
+  </div>
+  <div style="width:60px;height:2px;background:#e2e8f0;margin:0 .3rem"></div>
+  <div style="text-align:center">
+    <div style="width:40px;height:40px;border-radius:50%;background:#e2e8f0;color:#64748b;display:flex;align-items:center;justify-content:center;margin:0 auto .3rem;font-weight:700">4</div>
+    <span style="font-size:.75rem;color:#64748b">Confirmation</span>
+  </div>
+</div>
+
+<div class="demo-grid">
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Étape 1</span>
+    <h3>Choix du soin</h3>
+    <p>Grille de sélection radio : Prélèvement, Injection, Pansement, Perfusion, Vaccination, Nursing, Diabète, Autre. Option domicile + choix infirmier.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Étape 2</span>
+    <h3>Sélection créneau</h3>
+    <p>Calendrier date + créneaux horaires chargés en temps réel via l'API. Boutons cliquables. Créneaux passés/occupés masqués.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Étape 3</span>
+    <h3>Informations patient</h3>
+    <p>Nom, prénom, email, téléphone, adresse (si domicile), notes. Consentement RGPD obligatoire.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Étape 4</span>
+    <h3>Confirmation</h3>
+    <p>Référence unique (RDV-XXXXXXXX), récapitulatif complet, statut "en attente" en BDD. Audit log.</p>
+  </div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem">
+  <span class="time-slot">07h00</span>
+  <span class="time-slot">07h30</span>
+  <span class="time-slot selected">08h00</span>
+  <span class="time-slot">08h30</span>
+  <span class="time-slot">09h00</span>
+  <span class="time-slot">09h30</span>
+  <span class="time-slot">10h00</span>
+  <span class="time-slot">10h30</span>
+</div>
+</div>
+
+<!-- PRÉVENTION -->
+<div class="demo-section" id="prevention">
+<h2>3. Prévention & Éducation Santé</h2>
+<p>Modules éducatifs pas-à-pas, conseils santé numérotés, articles par catégorie.</p>
+
+<div class="demo-grid">
+  <div class="demo-card">
+    <span class="demo-badge demo-info">Module</span>
+    <h3>&#128166; Lavage des mains</h3>
+    <p>Technique OMS en 6 étapes interactives avec badges numérotés.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-info">Module</span>
+    <h3>&#128200; Surveiller sa glycémie</h3>
+    <p>Guide diabétiques : lecteur, piqûre, lecture, interprétation.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-info">Module</span>
+    <h3>&#128737; Prévention des chutes</h3>
+    <p>Sécurisation domicile seniors en 4 étapes clés.</p>
+  </div>
+</div>
+
+<h3 style="margin:1.5rem 0 .75rem">6 Conseils santé</h3>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+  <div class="demo-card"><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#0d6e6e;opacity:.3">01</div><h3>Hydratation</h3><p>1,5L d'eau / jour minimum</p></div>
+  <div class="demo-card"><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#0d6e6e;opacity:.3">02</div><h3>Activité physique</h3><p>30 min / jour</p></div>
+  <div class="demo-card"><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#0d6e6e;opacity:.3">03</div><h3>Sommeil</h3><p>7 à 9h par nuit</p></div>
+</div>
+
+<p style="margin-top:1rem;font-size:.9rem;color:#64748b">+ Filtrage par catégorie (Hygiène, Nutrition, Vaccination, Chronique, Seniors, Pédiatrie), articles dynamiques depuis la BDD.</p>
+</div>
+
+<!-- CONTACT -->
+<div class="demo-section" id="contact">
+<h2>4. Contact & WhatsApp</h2>
+<div class="demo-grid">
+  <div class="demo-card">
+    <h3>Coordonnées</h3>
+    <p>&#128205; 123 Avenue Jean Médecin, 06000 Nice<br>&#128222; 04 93 00 00 00<br>&#128231; admin@cabinet-garnier.fr<br>&#128336; Lun-Ven : 7h-19h | Sam : 8h-12h</p>
+  </div>
+  <div class="demo-card">
+    <h3>Formulaire de contact</h3>
+    <p>Nom, email, téléphone, sujet (select), message. Validation CSRF + consentement RGPD.</p>
+  </div>
+  <div class="demo-card">
+    <h3>WhatsApp intégré</h3>
+    <p>Bouton FAB flottant en bas à droite sur toutes les pages. Liens directs WhatsApp par infirmier dans l'équipe. Configurable depuis l'admin.</p>
+    <div style="margin-top:.75rem">
+      <span style="display:inline-flex;align-items:center;gap:.4rem;background:#25D366;color:#fff;padding:.5rem 1rem;border-radius:8px;font-weight:600;font-size:.85rem">&#128172; WhatsApp</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div class="demo-section" id="admin">
+<h2>5. Interface d'administration</h2>
+<p>Panneau complet avec sidebar, authentification sécurisée, gestion CRUD.</p>
+
+<div style="display:flex;gap:1rem;margin:1.5rem 0;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#1e293b">
+  <div style="width:200px;padding:1.5rem;color:#94a3b8;font-size:.85rem">
+    <div style="color:#fff;font-weight:700;margin-bottom:1rem">&#9764; Administration</div>
+    <div style="padding:.5rem 0;color:#fff;background:#334155;margin:0 -1.5rem;padding-left:1.5rem">&#127968; Tableau de bord</div>
+    <div style="padding:.5rem 0">&#128197; Rendez-vous</div>
+    <div style="padding:.5rem 0">&#128101; Contacts / Équipe</div>
+    <div style="padding:.5rem 0">&#9881; Paramètres</div>
+    <div style="padding:.5rem 0">&#128682; Déconnexion</div>
+  </div>
+  <div style="flex:1;background:#f1f5f9;padding:1.5rem">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem">
+      <div style="background:#fff;border-radius:8px;padding:1rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#0d6e6e">3</div><div style="font-size:.75rem;color:#64748b">RDV aujourd'hui</div></div>
+      <div style="background:#fff;border-radius:8px;padding:1rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#0d6e6e">7</div><div style="font-size:.75rem;color:#64748b">En attente</div></div>
+      <div style="background:#fff;border-radius:8px;padding:1rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#0d6e6e">142</div><div style="font-size:.75rem;color:#64748b">Total RDV</div></div>
+      <div style="background:#fff;border-radius:8px;padding:1rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#0d6e6e">4</div><div style="font-size:.75rem;color:#64748b">Infirmiers</div></div>
+    </div>
+    <div style="background:#fff;border-radius:8px;padding:1rem;font-size:.85rem;color:#64748b">
+      <strong style="color:#1e293b">Derniers RDV</strong><br>
+      RDV-A1B2C3D4 | Martin Dupont | Prélèvement | 2026-04-18 | 08h00 | <span style="background:#fef3c7;color:#92400e;padding:.1rem .4rem;border-radius:8px;font-size:.7rem">En attente</span>
+    </div>
+  </div>
+</div>
+
+<div class="demo-grid">
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Fait</span>
+    <h3>Login sécurisé</h3>
+    <p>Argon2id, CSRF, rate limiting (5 tentatives, 15min lock), session sécurisée.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Fait</span>
+    <h3>Gestion des paramètres</h3>
+    <p>Adresse, téléphone, email, horaires, réseaux sociaux, WhatsApp, durée créneaux.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Fait</span>
+    <h3>Gestion des contacts</h3>
+    <p>CRUD complet : ajout, modification, suppression (soft delete). Nom, téléphone, WhatsApp, rôle, ordre.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Fait</span>
+    <h3>Gestion des RDV</h3>
+    <p>Liste filtrable (tous, aujourd'hui, à venir, en attente). Changement de statut en 1 clic.</p>
+  </div>
+</div>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="demo-section" id="archi">
+<h2>6. Architecture & Sécurité</h2>
+
+<div class="demo-grid">
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Sécurité</span>
+    <h3>Chiffrement des données</h3>
+    <p>AES-256-CBC pour données patients sensibles. Mots de passe Argon2id. HTTPS forcé. Headers sécurité (X-Frame, X-XSS, CSP).</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">RGPD</span>
+    <h3>Conformité</h3>
+    <p>Consentement explicite, page mentions légales complète, audit log, durées de conservation, droits d'accès/rectification/suppression.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Base de données</span>
+    <h3>MySQL / 8 tables</h3>
+    <p>users, settings, contacts, appointments, available_slots, blocked_dates, prevention_articles, audit_log.</p>
+  </div>
+  <div class="demo-card">
+    <span class="demo-badge demo-ok">Hosting</span>
+    <h3>Hostinger ready</h3>
+    <p>PHP natif + MySQL. .htaccess configuré. Pas de framework lourd. Compatible hébergement mutualisé.</p>
+  </div>
+</div>
+
+<h3 style="margin:1.5rem 0 .75rem">Arborescence du projet</h3>
+<div style="background:#1e293b;color:#94a3b8;border-radius:12px;padding:1.5rem;font-family:monospace;font-size:.8rem;line-height:1.8;overflow-x:auto">
+<span style="color:#5eead4">scm-garnier-infirmier.fr/</span><br>
+├── <span style="color:#fff">index.php</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Accueil)<br>
+├── <span style="color:#fff">rendez-vous.php</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Booking 4 étapes)<br>
+├── <span style="color:#fff">prevention.php</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Modules + articles)<br>
+├── <span style="color:#fff">contact.php</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Contact + WhatsApp)<br>
+├── <span style="color:#fff">mentions-legales.php</span> &nbsp;&nbsp;&nbsp;(RGPD complet)<br>
+├── <span style="color:#fff">install.php</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Setup DB + admin)<br>
+├── <span style="color:#fff">preview.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Cette page)<br>
+├── <span style="color:#fff">.htaccess</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Sécurité + cache)<br>
+├── <span style="color:#5eead4">assets/</span><br>
+│&nbsp;&nbsp; ├── css/style.css &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Responsive complet)<br>
+│&nbsp;&nbsp; └── js/app.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Booking + UI)<br>
+├── <span style="color:#5eead4">includes/</span><br>
+│&nbsp;&nbsp; ├── config.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(DB + constantes)<br>
+│&nbsp;&nbsp; ├── functions.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Helpers + encrypt)<br>
+│&nbsp;&nbsp; ├── header.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Nav responsive)<br>
+│&nbsp;&nbsp; └── footer.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Footer + WhatsApp FAB)<br>
+├── <span style="color:#5eead4">admin/</span><br>
+│&nbsp;&nbsp; ├── login.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Auth sécurisée)<br>
+│&nbsp;&nbsp; ├── index.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Dashboard stats)<br>
+│&nbsp;&nbsp; ├── settings.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Paramètres site)<br>
+│&nbsp;&nbsp; ├── contacts.php &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(CRUD équipe)<br>
+│&nbsp;&nbsp; ├── appointments.php &nbsp;&nbsp;&nbsp;&nbsp;(Gestion RDV)<br>
+│&nbsp;&nbsp; └── includes/auth.php &nbsp;&nbsp;&nbsp;(Auth + admin layout)<br>
+└── <span style="color:#5eead4">api/</span><br>
+&nbsp;&nbsp;&nbsp; └── appointments.php &nbsp;&nbsp;&nbsp;&nbsp;(API créneaux + booking)
+</div>
+
+<h3 style="margin:1.5rem 0 .75rem">Palette de couleurs</h3>
+<div class="color-row">
+  <div class="color-swatch" style="background:#0d6e6e">#0d6e6e</div>
+  <div class="color-swatch" style="background:#0a5858">#0a5858</div>
+  <div class="color-swatch" style="background:#5eead4;color:#064e4e">#5eead4</div>
+  <div class="color-swatch" style="background:#f59e0b">#f59e0b</div>
+  <div class="color-swatch" style="background:#1e293b">#1e293b</div>
+  <div class="color-swatch" style="background:#25D366">#25D366</div>
+</div>
+</div>
+
+<!-- LIMITES -->
+<div class="demo-section" style="border-bottom:none">
+<h2>7. Ce qui reste à faire</h2>
+<div class="demo-grid">
+  <div class="demo-card" style="border-left:3px solid #f59e0b">
+    <h3>Notifications email/SMS</h3>
+    <p>Confirmation de RDV par email, rappels SMS. Nécessite un service externe (SendGrid, Twilio).</p>
+  </div>
+  <div class="demo-card" style="border-left:3px solid #f59e0b">
+    <h3>Paiement sécurisé</h3>
+    <p>Intégration Stripe/PayPlug pour le paiement des consultations. Webhook + facturation.</p>
+  </div>
+  <div class="demo-card" style="border-left:3px solid #f59e0b">
+    <h3>Éditeur d'articles</h3>
+    <p>Interface admin pour créer/publier des articles prévention avec éditeur WYSIWYG.</p>
+  </div>
+  <div class="demo-card" style="border-left:3px solid #f59e0b">
+    <h3>Upload photos</h3>
+    <p>Upload des photos d'infirmiers et images d'articles dans l'admin.</p>
+  </div>
+  <div class="demo-card" style="border-left:3px solid #f59e0b">
+    <h3>Export RGPD</h3>
+    <p>Bouton d'export des données patient au format JSON/CSV pour droit de portabilité.</p>
+  </div>
+  <div class="demo-card" style="border-left:3px solid #f59e0b">
+    <h3>Tests automatisés</h3>
+    <p>Tests unitaires PHP et tests d'intégration pour les API.</p>
+  </div>
+</div>
+</div>
+
+</div>
+
+<footer style="background:#1e293b;color:#64748b;text-align:center;padding:2rem;margin-top:2rem;font-size:.85rem">
+  <p>&copy; 2026 SCM Garnier Infirmier &middot; Prévisualisation du projet</p>
+  <p style="margin-top:.5rem">17 fichiers &middot; PHP/MySQL &middot; Responsive &middot; RGPD &middot; Prêt pour Hostinger</p>
+</footer>
+
+</body>
+</html>

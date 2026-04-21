@@ -1,5 +1,6 @@
 # Hostinger local config (contains DB credentials)
 env.php
+.env.deploy
 
 # Uploads
 uploads/
@@ -17,5 +18,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Install script (should be deleted after setup)
-# install.php
+# FTP sync state
+.ftp-deploy-sync-state.json

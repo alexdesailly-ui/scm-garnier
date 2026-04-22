@@ -7,40 +7,22 @@ on:
       - main
     paths-ignore:
       - 'docs/**'
-      - 'README.md'
       - '*.md'
 
 jobs:
   deploy:
-    name: Deploy to Hostinger
+    name: Deploy SCM Garnier to Hostinger
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Exclude non-production files
+      - name: Clean non-production files
         run: |
-          rm -rf docs/ .github/ scripts/deploy-local.sh
-          rm -f preview.html env.example.php
-          echo "Cleaned non-production files"
+          rm -rf docs/ .github/ scripts/setup-secrets.sh
+          rm -f preview.html env.example.php .env.deploy
 
-      - name: Create env.php from secrets
-        run: |
-          cat > env.php << 'ENVEOF'
-          <?php
-          return [
-              'DB_HOST'        => '${{ secrets.DB_HOST }}',
-              'DB_NAME'        => '${{ secrets.DB_NAME }}',
-              'DB_USER'        => '${{ secrets.DB_USER }}',
-              'DB_PASS'        => '${{ secrets.DB_PASS }}',
-              'SITE_URL'       => '${{ secrets.SITE_URL }}',
-              'APP_SECRET'     => '${{ secrets.APP_SECRET }}',
-              'ENCRYPTION_KEY' => '${{ secrets.ENCRYPTION_KEY }}',
-              'APP_DEBUG'      => false,
-          ];
-          ENVEOF
-
-      - name: Deploy via FTP to Hostinger
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: 145.79.20.5
@@ -51,20 +33,7 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
-            docs/**
-            scripts/**
-            preview.html
-            env.example.php
-            README.md
-
-      - name: Run database migration via SSH
-        if: ${{ secrets.SSH_KEY != '' }}
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd ${{ secrets.FTP_DIR }}
-            php scripts/migrate.php
+            **/docs/**
+            **/.env.deploy
+            **/preview.html
+            **/env.example.php

@@ -5,9 +5,6 @@ on:
     branches:
       - claude/nursing-clinic-website-4lu80
       - main
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
 
 jobs:
   deploy:
@@ -30,6 +27,8 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           server-dir: /public_html/
           port: 21
+          protocol: ftp
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**

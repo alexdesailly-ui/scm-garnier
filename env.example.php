@@ -12,8 +12,8 @@ return [
     // Base de données MySQL (hPanel > Bases de données > MySQL Databases)
     // Format Hostinger : u123456789_nombase / u123456789_nomuser
     'DB_HOST' => 'localhost',
-    'DB_NAME' => 'u123456789_scm_garnier',
-    'DB_USER' => 'u123456789_admin',
+    'DB_NAME' => 'u398408214_scm_garnier',
+    'DB_USER' => 'u398408214_admin',
     'DB_PASS' => 'VotreMotDePasseMySQL',
 
     // URL du site (sans slash final)

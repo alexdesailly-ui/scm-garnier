@@ -40,13 +40,14 @@ jobs:
           ];
           ENVEOF
 
-      - name: Deploy via FTP
+      - name: Deploy via FTP to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
+          server: 145.79.20.5
+          username: u398408214
           password: ${{ secrets.FTP_PASS }}
-          server-dir: ${{ secrets.FTP_DIR }}
+          server-dir: /public_html/
+          port: 21
           exclude: |
             **/.git*
             **/.git*/**

@@ -17,33 +17,32 @@ REPO="alexdesailly-ui/scm-garnier-infirmier.fr"
 echo "=== Configuration des secrets GitHub ==="
 echo "Repository: $REPO"
 echo ""
-echo "Les secrets FTP sont les mêmes que pour agilecorp.fr"
-echo "(même compte Hostinger, domaine différent)"
+echo "Compte Hostinger : u398408214 (scm-garnier-infirmier.fr)"
 echo ""
 
-# FTP credentials (same as agilecorp.fr)
-read -p "FTP Host (ex: ftp.hostinger.com): " FTP_HOST
-read -p "FTP User (ex: u123456789): " FTP_USER
+# FTP credentials
+FTP_HOST="145.79.20.5"
+FTP_USER="u398408214"
+echo "FTP Host: $FTP_HOST"
+echo "FTP User: $FTP_USER"
 read -sp "FTP Password: " FTP_PASS
 echo ""
 
-# Target directory for this domain
-FTP_DIR="/domains/scm-garnier-infirmier.fr/public_html/"
+FTP_DIR="/public_html/"
 echo "FTP Dir: $FTP_DIR"
 
-# MySQL (from hPanel > Databases)
+# MySQL
 echo ""
 echo "--- MySQL (hPanel > Bases de données) ---"
-read -p "DB Host (default: localhost): " DB_HOST
-DB_HOST=${DB_HOST:-localhost}
-read -p "DB Name (ex: u123456789_scm_garnier): " DB_NAME
-read -p "DB User (ex: u123456789_admin): " DB_USER
+DB_HOST="localhost"
+read -p "DB Name (default: u398408214_scm_garnier): " DB_NAME
+DB_NAME=${DB_NAME:-u398408214_scm_garnier}
+read -p "DB User (default: u398408214_admin): " DB_USER
+DB_USER=${DB_USER:-u398408214_admin}
 read -sp "DB Password: " DB_PASS
 echo ""
 
-# Site URL
-read -p "Site URL (default: https://scm-garnier-infirmier.fr): " SITE_URL
-SITE_URL=${SITE_URL:-https://scm-garnier-infirmier.fr}
+SITE_URL="https://scm-garnier-infirmier.fr"
 
 # Generate security keys
 APP_SECRET=$(openssl rand -hex 32)

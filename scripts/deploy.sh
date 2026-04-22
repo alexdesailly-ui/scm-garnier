@@ -32,28 +32,26 @@ DEPLOY_ENV="$PROJECT_DIR/.env.deploy"
 if [ ! -f "$DEPLOY_ENV" ]; then
     echo -e "${YELLOW}Création du fichier .env.deploy...${NC}"
     cat > "$DEPLOY_ENV" << 'ENVEOF'
-# Hostinger FTP credentials (same account as agilecorp.fr)
-FTP_HOST="ftp.hostinger.com"
-FTP_USER="u123456789"
-FTP_PASS="your_ftp_password"
+# Hostinger FTP - scm-garnier-infirmier.fr
+FTP_HOST="145.79.20.5"
+FTP_USER="u398408214"
+FTP_PASS="VOTRE_MOT_DE_PASSE_FTP"
 
-# Target directory on Hostinger
-# agilecorp.fr    -> /public_html/
-# scm-garnier     -> /domains/scm-garnier-infirmier.fr/public_html/
-FTP_DIR="/domains/scm-garnier-infirmier.fr/public_html/"
+# Dossier cible sur Hostinger
+FTP_DIR="/public_html/"
 
-# MySQL credentials (from hPanel > Databases)
+# MySQL (hPanel > Bases de données)
 DB_HOST="localhost"
-DB_NAME="u123456789_scm_garnier"
-DB_USER="u123456789_admin"
-DB_PASS="your_mysql_password"
+DB_NAME="u398408214_scm_garnier"
+DB_USER="u398408214_admin"
+DB_PASS="VOTRE_MOT_DE_PASSE_MYSQL"
 
-# Site config
+# Site
 SITE_URL="https://scm-garnier-infirmier.fr"
 APP_SECRET="$(openssl rand -hex 32)"
 ENCRYPTION_KEY="$(openssl rand -base64 32)"
 ENVEOF
-    echo -e "${RED}Remplissez .env.deploy avec vos identifiants Hostinger, puis relancez.${NC}"
+    echo -e "${RED}Remplissez .env.deploy avec vos mots de passe, puis relancez.${NC}"
     exit 1
 fi
 

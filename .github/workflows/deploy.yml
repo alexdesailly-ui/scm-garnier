@@ -27,8 +27,8 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           server-dir: /public_html/
           port: 21
-          protocol: ftp
-          dangerous-clean-slate: true
+          protocol: ftps
+          security: loose
           exclude: |
             **/.git*
             **/.git*/**

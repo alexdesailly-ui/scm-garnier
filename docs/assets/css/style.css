@@ -214,23 +214,33 @@ textarea.form-input{resize:vertical}
 .pillar-card{background:var(--c-white);border-radius:var(--radius);padding:2rem;box-shadow:var(--shadow);border:1px solid var(--c-border);display:flex;flex-direction:column;align-items:center;text-align:center;transition:transform .2s,box-shadow .2s}
 .pillar-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
 .pillar-illustration{margin-bottom:1rem}
-.pillar-content h3{font-size:1.1rem;margin-bottom:.3rem}
+
+/* Pillar Card content (no wrapper div) */
+.pillar-card h3{font-size:1.1rem;margin-bottom:.3rem}
 .pillar-stat{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--c-primary);font-weight:700;margin-bottom:.5rem}
 .pillar-stat small{font-size:.85rem;font-weight:400;color:var(--c-muted)}
-.pillar-content p{font-size:.88rem;color:var(--c-muted);line-height:1.5}
+.pillar-card>p{font-size:.88rem;color:var(--c-muted);line-height:1.5}
 
-/* Enhanced Module Cards */
-.module-card-enhanced{position:relative}
-.module-visual{margin-top:1rem}
-.module-step-visual{display:flex;align-items:center;gap:.75rem;padding:.5rem 0}
-.step-circle{width:28px;height:28px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
-.step-info{text-align:left}
-.step-info strong{display:block;font-size:.88rem;color:var(--c-text)}
-.step-info span{font-size:.78rem;color:var(--c-muted)}
-.step-connector{width:2px;height:10px;border-left:2px dashed var(--c-primary-light);margin-left:13px}
-.module-alert{display:flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.7rem 1rem;background:#fef2f2;border-radius:var(--radius-sm);font-size:.82rem;color:#dc2626;font-weight:500;border:1px solid #fecaca}
-.module-fact{margin-top:1rem;padding:.7rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);font-size:.82rem;color:#065f46;border:1px solid #bbf7d0;line-height:1.5}
-.module-fact strong{display:block;margin-bottom:.15rem}
+/* Tutorial Cards */
+.tuto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.tuto-card{background:var(--c-white);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow);border:1px solid var(--c-border)}
+.tuto-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem}
+.tuto-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tuto-header h3{font-size:1.05rem;margin-bottom:.1rem}
+.tuto-meta{font-size:.78rem;color:var(--c-muted)}
+.tuto-steps{list-style:none;counter-reset:tuto;padding:0;margin:0}
+.tuto-steps li{counter-increment:tuto;display:flex;align-items:center;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--c-border);font-size:.88rem}
+.tuto-steps li:last-child{border-bottom:none}
+.tuto-steps li::before{content:counter(tuto);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.tuto-steps li strong{font-weight:600}
+.tuto-blue .tuto-icon{background:#dbeafe;color:#1e40af}
+.tuto-blue .tuto-steps li::before{background:#dbeafe;color:#1e40af}
+.tuto-amber .tuto-icon{background:#fef3c7;color:#92400e}
+.tuto-amber .tuto-steps li::before{background:#fef3c7;color:#92400e}
+.tuto-green .tuto-icon{background:#d1fae5;color:#065f46}
+.tuto-green .tuto-steps li::before{background:#d1fae5;color:#065f46}
+.tuto-alert{display:flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.6rem 1rem;background:#fef2f2;border-radius:var(--radius-sm);font-size:.82rem;color:#dc2626;font-weight:500;border:1px solid #fecaca}
+.tuto-fact{margin-top:1rem;padding:.6rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);font-size:.82rem;color:#065f46;border:1px solid #bbf7d0;line-height:1.5}
 
 /* Articles */
 .category-filter{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;justify-content:center}
@@ -289,7 +299,7 @@ textarea.form-input{resize:vertical}
 
 /* Responsive */
 @media(max-width:1024px){
-.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid,.pillar-grid{grid-template-columns:repeat(2,1fr)}
+.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid,.pillar-grid,.tuto-grid{grid-template-columns:repeat(2,1fr)}
 .video-grid{grid-template-columns:repeat(2,1fr)}
 .footer-grid{grid-template-columns:1fr 1fr}
 }
@@ -302,7 +312,7 @@ textarea.form-input{resize:vertical}
 .nav-link{padding:.75rem 1rem;width:100%}
 .hero h1{font-size:2rem}
 .hero{padding:3rem 0}
-.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid,.pillar-grid{grid-template-columns:1fr}
+.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid,.pillar-grid,.tuto-grid{grid-template-columns:1fr}
 .video-grid{grid-template-columns:1fr}
 .form-grid{grid-template-columns:1fr}
 .contact-grid{grid-template-columns:1fr}

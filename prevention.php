@@ -35,11 +35,12 @@ $videos = [
 ];
 foreach ($videos as $v): ?>
                 <div class="video-card">
-                    <div class="video-embed">
-                        <a href="https://www.youtube.com/watch?v=<?= $v['id'] ?>" target="_blank" rel="noopener" class="video-thumb" style="background-image:url('https://img.youtube.com/vi/<?= $v['id'] ?>/hqdefault.jpg')">
+                    <a href="https://www.youtube.com/watch?v=<?= $v['id'] ?>" target="_blank" rel="noopener" class="video-link">
+                        <div class="video-embed">
+                            <img src="https://img.youtube.com/vi/<?= $v['id'] ?>/hqdefault.jpg" alt="<?= $v['title'] ?>" loading="lazy">
                             <span class="video-play-btn">&#9654;</span>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                     <div class="video-body">
                         <span class="video-tag video-tag-<?= $v['tag'] ?>"><?= $v['label'] ?></span>
                         <h3><?= $v['title'] ?></h3>

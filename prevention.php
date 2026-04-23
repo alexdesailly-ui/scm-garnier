@@ -24,71 +24,29 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="video-grid">
+<?php
+$videos = [
+    ['id' => '2FjRZbbnZaI', 'tag' => 'hygiene', 'label' => 'Hygiène', 'title' => 'Lavage des mains selon l\'OMS', 'desc' => 'La technique officielle en 6 étapes pour un lavage des mains efficace.'],
+    ['id' => '7jxs59k51KE', 'tag' => 'diabete', 'label' => 'Diabète', 'title' => 'Mesurer sa glycémie capillaire', 'desc' => 'Tutoriel complet : utilisation du lecteur de glycémie étape par étape.'],
+    ['id' => 'xFudwDTc-Qc', 'tag' => 'senior', 'label' => 'Seniors', 'title' => 'Prévenir les chutes à domicile', 'desc' => 'Conseils pratiques pour sécuriser le logement des personnes âgées.'],
+    ['id' => 'eho8NjFyxxc', 'tag' => 'urgence', 'label' => 'Premiers secours', 'title' => 'Les étapes des premiers secours', 'desc' => 'Croix-Rouge française : les étapes essentielles en situation d\'urgence.'],
+    ['id' => 'r6IfIrOnNNo', 'tag' => 'cardio', 'label' => 'Cardiovasculaire', 'title' => 'Bien prendre sa tension', 'desc' => 'CHU de Toulouse : pourquoi et comment réaliser l\'automesure tensionnelle.'],
+    ['id' => '-M6Py71AmjU', 'tag' => 'vaccin', 'label' => 'Vaccination', 'title' => 'Comment fonctionne un vaccin ?', 'desc' => 'Les essentiels de Jamy : explication claire et accessible pour tous.'],
+];
+foreach ($videos as $v): ?>
                 <div class="video-card">
                     <div class="video-embed">
-                        <iframe src="https://www.youtube.com/embed/2FjRZbbnZaI" title="Lavage des mains selon l'OMS" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                        <a href="https://www.youtube.com/watch?v=<?= $v['id'] ?>" target="_blank" rel="noopener" class="video-thumb" style="background-image:url('https://img.youtube.com/vi/<?= $v['id'] ?>/hqdefault.jpg')">
+                            <span class="video-play-btn">&#9654;</span>
+                        </a>
                     </div>
                     <div class="video-body">
-                        <span class="video-tag video-tag-hygiene">Hygiène</span>
-                        <h3>Lavage des mains selon l'OMS</h3>
-                        <p>La technique officielle en 6 étapes pour un lavage des mains efficace.</p>
+                        <span class="video-tag video-tag-<?= $v['tag'] ?>"><?= $v['label'] ?></span>
+                        <h3><?= $v['title'] ?></h3>
+                        <p><?= $v['desc'] ?></p>
                     </div>
                 </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <iframe src="https://www.youtube.com/embed/7jxs59k51KE" title="Diabétologie : l'auto-contrôle capillaire" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-body">
-                        <span class="video-tag video-tag-diabete">Diabète</span>
-                        <h3>Mesurer sa glycémie capillaire</h3>
-                        <p>Tutoriel complet : utilisation du lecteur de glycémie étape par étape.</p>
-                    </div>
-                </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <iframe src="https://www.youtube.com/embed/xFudwDTc-Qc" title="Comment prévenir les chutes des personnes âgées" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-body">
-                        <span class="video-tag video-tag-senior">Seniors</span>
-                        <h3>Prévenir les chutes à domicile</h3>
-                        <p>Conseils pratiques pour sécuriser le logement des personnes âgées.</p>
-                    </div>
-                </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <iframe src="https://www.youtube.com/embed/_ydjjmfb8KM" title="Gestes qui sauvent - Croix-Rouge française" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-body">
-                        <span class="video-tag video-tag-urgence">Premiers secours</span>
-                        <h3>Les gestes qui sauvent</h3>
-                        <p>Tuto officiel de la Croix-Rouge française sur les gestes d'urgence.</p>
-                    </div>
-                </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <iframe src="https://www.youtube.com/embed/r6IfIrOnNNo" title="Automesure tensionnelle - CHU Toulouse" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-body">
-                        <span class="video-tag video-tag-cardio">Cardiovasculaire</span>
-                        <h3>Bien prendre sa tension</h3>
-                        <p>Guide du CHU de Toulouse : pourquoi et comment réaliser l'automesure.</p>
-                    </div>
-                </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <iframe src="https://www.youtube.com/embed/-M6Py71AmjU" title="Comment fonctionne un vaccin - Jamy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-                    </div>
-                    <div class="video-body">
-                        <span class="video-tag video-tag-vaccin">Vaccination</span>
-                        <h3>Comment fonctionne un vaccin ?</h3>
-                        <p>Les essentiels de Jamy : explication claire et accessible pour tous.</p>
-                    </div>
-                </div>
+<?php endforeach; ?>
             </div>
         </div>
     </section>

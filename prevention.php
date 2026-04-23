@@ -2,7 +2,6 @@
 $pageTitle = 'Prévention Santé';
 require_once __DIR__ . '/includes/header.php';
 
-// Fetch published articles
 try {
     $pdo = getDB();
     $stmt = $pdo->query("SELECT * FROM prevention_articles WHERE is_published = 1 ORDER BY published_at DESC");
@@ -10,19 +9,8 @@ try {
 } catch (PDOException $e) {
     $articles = [];
 }
-
-$categories = [
-    'general'   => ['label' => 'Tous', 'icon' => ''],
-    'hygiene'   => ['label' => 'Hygiène de vie', 'icon' => '&#128166;'],
-    'nutrition' => ['label' => 'Nutrition', 'icon' => '&#127822;'],
-    'vaccination' => ['label' => 'Vaccination', 'icon' => '&#128137;'],
-    'chronique' => ['label' => 'Maladies chroniques', 'icon' => '&#128153;'],
-    'senior'    => ['label' => 'Seniors', 'icon' => '&#128116;'],
-    'pediatrie' => ['label' => 'Pédiatrie', 'icon' => '&#128118;'],
-];
 ?>
 
-    <!-- Page Header -->
     <section class="page-header page-header-prevention">
         <div class="container">
             <nav class="breadcrumb" aria-label="Fil d'Ariane">
@@ -31,146 +19,321 @@ $categories = [
                 <span>Prévention Santé</span>
             </nav>
             <h1>Prévention &amp; Éducation Santé</h1>
-            <p>Tutoriels, conseils et modules éducatifs pour prendre soin de votre santé au quotidien.</p>
+            <p>Vidéos, tutoriels et conseils pratiques pour prendre soin de votre santé au quotidien.</p>
         </div>
     </section>
 
-    <!-- Educational Modules -->
+    <!-- Video Modules -->
     <section class="section">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Modules éducatifs</span>
-                <h2>Apprenez les bons gestes</h2>
+                <span class="section-tag">Vidéos éducatives</span>
+                <h2>Apprenez en images</h2>
+                <p>Des vidéos courtes et claires pour comprendre les bons gestes santé.</p>
+            </div>
+
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-embed">
+                        <iframe src="https://www.youtube.com/embed/jGa3WOL9rGU" title="Lavage des mains - OMS" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-body">
+                        <span class="video-tag video-tag-hygiene">Hygiène</span>
+                        <h3>Lavage des mains : la technique OMS</h3>
+                        <p>Les 6 étapes essentielles pour un lavage efficace. 30 secondes qui peuvent tout changer.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-embed">
+                        <iframe src="https://www.youtube.com/embed/TFSsBsp5xWo" title="Mesurer sa glycémie" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-body">
+                        <span class="video-tag video-tag-diabete">Diabète</span>
+                        <h3>Comment mesurer sa glycémie</h3>
+                        <p>Guide pratique pour les patients diabétiques : utilisation du lecteur de glycémie étape par étape.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-embed">
+                        <iframe src="https://www.youtube.com/embed/txOBMEfFpVo" title="Prévention des chutes" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-body">
+                        <span class="video-tag video-tag-senior">Seniors</span>
+                        <h3>Prévenir les chutes à domicile</h3>
+                        <p>Conseils pratiques pour sécuriser votre logement et maintenir votre équilibre au quotidien.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-embed">
+                        <iframe src="https://www.youtube.com/embed/8svuSBhhmVQ" title="Gestes premiers secours" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-body">
+                        <span class="video-tag video-tag-urgence">Premiers secours</span>
+                        <h3>Les gestes qui sauvent</h3>
+                        <p>Apprenez les gestes de premiers secours : position latérale de sécurité, massage cardiaque, défibrillateur.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-embed">
+                        <iframe src="https://www.youtube.com/embed/fmKPNv0K2gM" title="Prise de tension artérielle" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-body">
+                        <span class="video-tag video-tag-cardio">Cardiovasculaire</span>
+                        <h3>Bien prendre sa tension</h3>
+                        <p>Comment utiliser un tensiomètre, interpréter les résultats et quand consulter votre médecin.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-embed">
+                        <iframe src="https://www.youtube.com/embed/GYIA64jfMHw" title="Vaccination expliquée" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-body">
+                        <span class="video-tag video-tag-vaccin">Vaccination</span>
+                        <h3>Comprendre la vaccination</h3>
+                        <p>Comment fonctionnent les vaccins, pourquoi ils sont importants et le calendrier vaccinal à jour.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Illustrated Tips -->
+    <section class="section section-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Les essentiels</span>
+                <h2>6 piliers d'une bonne santé</h2>
+                <p>Des habitudes simples qui font toute la différence.</p>
+            </div>
+
+            <div class="pillar-grid">
+                <div class="pillar-card pillar-water">
+                    <div class="pillar-illustration">
+                        <svg viewBox="0 0 120 120" width="100" height="100"><circle cx="60" cy="60" r="55" fill="#dbeafe" opacity=".5"/><path d="M60 20 C60 20 30 55 30 75 C30 91.57 43.43 105 60 105 C76.57 105 90 91.57 90 75 C90 55 60 20 60 20Z" fill="#3b82f6" opacity=".8"/><path d="M60 20 C60 20 45 55 45 75 C45 83.28 51.72 90 60 90" fill="#60a5fa" opacity=".6"/><circle cx="50" cy="70" r="3" fill="#fff" opacity=".6"/><circle cx="55" cy="80" r="2" fill="#fff" opacity=".4"/></svg>
+                    </div>
+                    <div class="pillar-content">
+                        <h3>Hydratation</h3>
+                        <div class="pillar-stat">1,5L <small>/ jour minimum</small></div>
+                        <p>L'eau est essentielle au bon fonctionnement de vos reins et de votre circulation sanguine. Augmentez en cas de chaleur ou d'effort.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-card pillar-move">
+                    <div class="pillar-illustration">
+                        <svg viewBox="0 0 120 120" width="100" height="100"><circle cx="60" cy="60" r="55" fill="#d1fae5" opacity=".5"/><circle cx="60" cy="28" r="8" fill="#10b981"/><line x1="60" y1="36" x2="60" y2="65" stroke="#10b981" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="45" x2="40" y2="55" stroke="#10b981" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="45" x2="80" y2="38" stroke="#10b981" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="65" x2="42" y2="90" stroke="#10b981" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="65" x2="78" y2="90" stroke="#10b981" stroke-width="3" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="pillar-content">
+                        <h3>Activité physique</h3>
+                        <div class="pillar-stat">30 min <small>/ jour</small></div>
+                        <p>Marche, natation, vélo... 30 minutes d'activité modérée réduisent significativement les risques cardiovasculaires.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-card pillar-sleep">
+                    <div class="pillar-illustration">
+                        <svg viewBox="0 0 120 120" width="100" height="100"><circle cx="60" cy="60" r="55" fill="#ede9fe" opacity=".5"/><path d="M70 30 C55 30 42 43 42 58 C42 73 55 86 70 86 C60 86 35 78 35 58 C35 38 55 25 70 30Z" fill="#8b5cf6" opacity=".8"/><text x="78" y="40" font-size="14" fill="#8b5cf6" opacity=".6">z</text><text x="88" y="32" font-size="10" fill="#8b5cf6" opacity=".4">z</text><text x="95" y="26" font-size="8" fill="#8b5cf6" opacity=".3">z</text></svg>
+                    </div>
+                    <div class="pillar-content">
+                        <h3>Sommeil</h3>
+                        <div class="pillar-stat">7-9h <small>/ nuit</small></div>
+                        <p>Un sommeil réparateur renforce votre système immunitaire. Évitez les écrans 1h avant le coucher.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-card pillar-food">
+                    <div class="pillar-illustration">
+                        <svg viewBox="0 0 120 120" width="100" height="100"><circle cx="60" cy="60" r="55" fill="#fef3c7" opacity=".5"/><circle cx="45" cy="60" r="16" fill="#f59e0b" opacity=".7"/><circle cx="75" cy="55" r="12" fill="#ef4444" opacity=".7"/><circle cx="65" cy="75" r="10" fill="#22c55e" opacity=".7"/><circle cx="50" cy="45" r="8" fill="#f97316" opacity=".6"/><path d="M55 38 C55 38 58 28 60 38" stroke="#22c55e" stroke-width="2" fill="none"/></svg>
+                    </div>
+                    <div class="pillar-content">
+                        <h3>Alimentation</h3>
+                        <div class="pillar-stat">5 fruits <small>& légumes / jour</small></div>
+                        <p>Privilégiez les fruits, légumes, céréales complètes. Limitez sel, sucre ajouté et graisses saturées.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-card pillar-vaccine">
+                    <div class="pillar-illustration">
+                        <svg viewBox="0 0 120 120" width="100" height="100"><circle cx="60" cy="60" r="55" fill="#fce7f3" opacity=".5"/><rect x="50" y="25" width="20" height="50" rx="3" fill="#ec4899" opacity=".8"/><rect x="53" y="15" width="14" height="15" rx="2" fill="#ec4899" opacity=".6"/><line x1="60" y1="75" x2="60" y2="95" stroke="#ec4899" stroke-width="3" stroke-linecap="round"/><polygon points="55,95 65,95 60,105" fill="#ec4899" opacity=".8"/><line x1="53" y1="40" x2="67" y2="40" stroke="#fff" stroke-width="2"/><line x1="53" y1="48" x2="67" y2="48" stroke="#fff" stroke-width="2"/></svg>
+                    </div>
+                    <div class="pillar-content">
+                        <h3>Vaccination</h3>
+                        <div class="pillar-stat">A jour <small>selon le calendrier</small></div>
+                        <p>Grippe, COVID-19, tétanos, zona... Tenez votre carnet vaccinal à jour, surtout après 65 ans.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-card pillar-checkup">
+                    <div class="pillar-illustration">
+                        <svg viewBox="0 0 120 120" width="100" height="100"><circle cx="60" cy="60" r="55" fill="#e0f2fe" opacity=".5"/><rect x="35" y="20" width="50" height="65" rx="5" fill="#0284c7" opacity=".2"/><rect x="40" y="30" width="40" height="6" rx="2" fill="#0284c7" opacity=".5"/><rect x="40" y="42" width="30" height="4" rx="2" fill="#0284c7" opacity=".3"/><rect x="40" y="52" width="35" height="4" rx="2" fill="#0284c7" opacity=".3"/><rect x="40" y="62" width="25" height="4" rx="2" fill="#0284c7" opacity=".3"/><circle cx="75" cy="80" r="18" fill="#0284c7" opacity=".8"/><path d="M68 80 L73 85 L83 75" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="pillar-content">
+                        <h3>Dépistages</h3>
+                        <div class="pillar-stat">Réguliers <small>tension, glycémie...</small></div>
+                        <p>Les dépistages précoces (tension, glycémie, cholestérol, cancers) améliorent considérablement le pronostic.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Modules -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Modules interactifs</span>
+                <h2>Les bons gestes étape par étape</h2>
             </div>
 
             <div class="modules-grid">
-                <div class="module-card">
+                <div class="module-card module-card-enhanced">
                     <div class="module-icon" style="background: linear-gradient(135deg, #dbeafe, #93c5fd)">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
                     </div>
                     <h3>Lavage des mains</h3>
-                    <p>Technique OMS complète pour un lavage des mains efficace en 6 étapes. Durée recommandée : 30 secondes.</p>
-                    <div class="module-steps">
-                        <div class="module-step">
-                            <span class="step-badge">1</span>
-                            <span>Mouiller les mains</span>
+                    <p>Technique OMS en 6 étapes - Durée : 30 secondes</p>
+                    <div class="module-visual">
+                        <div class="module-step-visual">
+                            <div class="step-circle">1</div>
+                            <div class="step-info">
+                                <strong>Mouiller</strong>
+                                <span>Passez vos mains sous l'eau tiède</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">2</span>
-                            <span>Savonner paume contre paume</span>
+                        <div class="step-connector"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle">2</div>
+                            <div class="step-info">
+                                <strong>Savonner</strong>
+                                <span>Paume contre paume, frotter</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">3</span>
-                            <span>Frotter les entre-doigts</span>
+                        <div class="step-connector"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle">3</div>
+                            <div class="step-info">
+                                <strong>Entre-doigts</strong>
+                                <span>Croiser les doigts, frotter</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">4</span>
-                            <span>Frotter le dos des mains</span>
+                        <div class="step-connector"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle">4</div>
+                            <div class="step-info">
+                                <strong>Dos des mains</strong>
+                                <span>Frotter le dos de chaque main</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">5</span>
-                            <span>Frotter les pouces</span>
+                        <div class="step-connector"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle">5</div>
+                            <div class="step-info">
+                                <strong>Pouces</strong>
+                                <span>Rotation autour de chaque pouce</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">6</span>
-                            <span>Rincer et sécher</span>
+                        <div class="step-connector"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle">6</div>
+                            <div class="step-info">
+                                <strong>Rincer & sécher</strong>
+                                <span>Eau claire, serviette propre</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="module-card">
+                <div class="module-card module-card-enhanced">
                     <div class="module-icon" style="background: linear-gradient(135deg, #fef3c7, #fcd34d)">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     </div>
                     <h3>Surveiller sa glycémie</h3>
-                    <p>Guide pratique pour les patients diabétiques : quand mesurer, comment interpréter les résultats, et quand alerter.</p>
-                    <div class="module-steps">
-                        <div class="module-step">
-                            <span class="step-badge">1</span>
-                            <span>Se laver les mains</span>
+                    <p>Guide pour les patients diabétiques</p>
+                    <div class="module-visual">
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#fef3c7;color:#92400e">1</div>
+                            <div class="step-info">
+                                <strong>Se laver les mains</strong>
+                                <span>Eau chaude et savon, bien sécher</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">2</span>
-                            <span>Préparer le lecteur</span>
+                        <div class="step-connector" style="border-color:#fcd34d"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#fef3c7;color:#92400e">2</div>
+                            <div class="step-info">
+                                <strong>Préparer le lecteur</strong>
+                                <span>Insérer une bandelette neuve</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">3</span>
-                            <span>Piquer sur le côté du doigt</span>
+                        <div class="step-connector" style="border-color:#fcd34d"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#fef3c7;color:#92400e">3</div>
+                            <div class="step-info">
+                                <strong>Piquer le côté du doigt</strong>
+                                <span>Varier les doigts à chaque mesure</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">4</span>
-                            <span>Lire et noter le résultat</span>
+                        <div class="step-connector" style="border-color:#fcd34d"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#fef3c7;color:#92400e">4</div>
+                            <div class="step-info">
+                                <strong>Lire & noter</strong>
+                                <span>Normal à jeun : 0,70 - 1,10 g/L</span>
+                            </div>
                         </div>
+                    </div>
+                    <div class="module-alert">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Consultez si &gt; 1,26 g/L à jeun ou &lt; 0,60 g/L
                     </div>
                 </div>
 
-                <div class="module-card">
+                <div class="module-card module-card-enhanced">
                     <div class="module-icon" style="background: linear-gradient(135deg, #d1fae5, #6ee7b7)">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
-                    <h3>Prévention des chutes</h3>
-                    <p>Conseils pour sécuriser votre domicile et maintenir votre équilibre, particulièrement pour les seniors.</p>
-                    <div class="module-steps">
-                        <div class="module-step">
-                            <span class="step-badge">1</span>
-                            <span>Éclairer les passages</span>
+                    <h3>Prévenir les chutes</h3>
+                    <p>Sécurisez votre domicile</p>
+                    <div class="module-visual">
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#d1fae5;color:#065f46">1</div>
+                            <div class="step-info">
+                                <strong>Éclairer les passages</strong>
+                                <span>Veilleuses la nuit, interrupteurs accessibles</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">2</span>
-                            <span>Retirer les tapis glissants</span>
+                        <div class="step-connector" style="border-color:#6ee7b7"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#d1fae5;color:#065f46">2</div>
+                            <div class="step-info">
+                                <strong>Retirer les obstacles</strong>
+                                <span>Tapis glissants, câbles au sol, objets</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">3</span>
-                            <span>Installer des barres d'appui</span>
+                        <div class="step-connector" style="border-color:#6ee7b7"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#d1fae5;color:#065f46">3</div>
+                            <div class="step-info">
+                                <strong>Installer des barres d'appui</strong>
+                                <span>Salle de bain, toilettes, escaliers</span>
+                            </div>
                         </div>
-                        <div class="module-step">
-                            <span class="step-badge">4</span>
-                            <span>Porter des chaussures adaptées</span>
+                        <div class="step-connector" style="border-color:#6ee7b7"></div>
+                        <div class="module-step-visual">
+                            <div class="step-circle" style="background:#d1fae5;color:#065f46">4</div>
+                            <div class="step-info">
+                                <strong>Chaussures adaptées</strong>
+                                <span>Semelles antidérapantes, bon maintien</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Health Tips -->
-    <section class="section section-light">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Conseils santé</span>
-                <h2>Nos recommandations</h2>
-            </div>
-
-            <div class="tips-grid">
-                <div class="tip-card">
-                    <div class="tip-number">01</div>
-                    <h3>Hydratation</h3>
-                    <p>Buvez au minimum 1,5 litre d'eau par jour. Augmentez votre consommation en cas de chaleur, d'activité physique ou de fièvre. L'eau est essentielle au bon fonctionnement de vos reins et de votre circulation sanguine.</p>
-                </div>
-                <div class="tip-card">
-                    <div class="tip-number">02</div>
-                    <h3>Activité physique</h3>
-                    <p>30 minutes d'activité modérée par jour réduisent significativement les risques cardiovasculaires. La marche, la natation ou le vélo sont d'excellentes options accessibles à tous.</p>
-                </div>
-                <div class="tip-card">
-                    <div class="tip-number">03</div>
-                    <h3>Sommeil</h3>
-                    <p>Visez 7 à 9 heures de sommeil par nuit. Un sommeil réparateur renforce votre système immunitaire et améliore votre concentration. Évitez les écrans 1h avant le coucher.</p>
-                </div>
-                <div class="tip-card">
-                    <div class="tip-number">04</div>
-                    <h3>Vaccination</h3>
-                    <p>Tenez à jour votre carnet de vaccination. La grippe saisonnière, le COVID-19, le tétanos et le zona sont des vaccinations importantes, surtout après 65 ans.</p>
-                </div>
-                <div class="tip-card">
-                    <div class="tip-number">05</div>
-                    <h3>Alimentation équilibrée</h3>
-                    <p>Privilégiez les fruits, légumes, céréales complètes et protéines maigres. Limitez le sel, le sucre ajouté et les graisses saturées. 5 portions de fruits et légumes par jour.</p>
-                </div>
-                <div class="tip-card">
-                    <div class="tip-number">06</div>
-                    <h3>Dépistages réguliers</h3>
-                    <p>Consultez régulièrement votre médecin traitant. Les dépistages (tension, glycémie, cholestérol, cancer) permettent une détection précoce et un meilleur pronostic.</p>
+                    <div class="module-fact">
+                        <strong>Le saviez-vous ?</strong> Les chutes sont la 1ère cause d'accident domestique chez les +65 ans. 9 300 décès par an en France.
+                    </div>
                 </div>
             </div>
         </div>
@@ -178,22 +341,12 @@ $categories = [
 
     <!-- Articles Section -->
     <?php if (!empty($articles)): ?>
-    <section class="section">
+    <section class="section section-light">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Articles</span>
                 <h2>Nos derniers articles</h2>
             </div>
-
-            <!-- Category Filter -->
-            <div class="category-filter" role="tablist">
-                <?php foreach ($categories as $key => $cat): ?>
-                <button class="filter-btn <?= $key === 'general' ? 'active' : '' ?>" data-category="<?= $key ?>" role="tab">
-                    <?= $cat['icon'] ? $cat['icon'] . ' ' : '' ?><?= $cat['label'] ?>
-                </button>
-                <?php endforeach; ?>
-            </div>
-
             <div class="articles-grid">
                 <?php foreach ($articles as $article): ?>
                 <article class="article-card" data-category="<?= e($article['category']) ?>">
@@ -203,10 +356,8 @@ $categories = [
                     </div>
                     <?php endif; ?>
                     <div class="article-body">
-                        <span class="article-tag"><?= e($categories[$article['category']]['label'] ?? $article['category']) ?></span>
                         <h3><?= e($article['title']) ?></h3>
                         <p><?= e($article['excerpt']) ?></p>
-                        <a href="/article.php?slug=<?= e($article['slug']) ?>" class="article-link">Lire la suite &rarr;</a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -221,8 +372,8 @@ $categories = [
             <h2>Besoin d'un conseil personnalisé ?</h2>
             <p style="max-width:600px;margin:1rem auto 2rem">Nos infirmiers sont disponibles pour répondre à vos questions et vous accompagner dans votre parcours de santé.</p>
             <div class="hero-actions" style="justify-content:center">
-                <a href="/contact.php" class="btn btn-white btn-lg">Nous contacter</a>
-                <a href="/rendez-vous.php" class="btn btn-outline-white btn-lg">Prendre RDV</a>
+                <a href="/contact" class="btn btn-white btn-lg">Nous contacter</a>
+                <a href="/rendez-vous" class="btn btn-outline-white btn-lg">Prendre RDV</a>
             </div>
         </div>
     </section>

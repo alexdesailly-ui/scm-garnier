@@ -192,6 +192,46 @@ textarea.form-input{resize:vertical}
 .tip-card h3{font-size:1rem;margin-bottom:.5rem}
 .tip-card p{font-size:.9rem;color:var(--c-muted)}
 
+/* Video Grid */
+.video-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem}
+.video-card{background:var(--c-white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--c-border);transition:transform .2s,box-shadow .2s}
+.video-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000}
+.video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%}
+.video-body{padding:1.25rem 1.5rem}
+.video-tag{display:inline-block;padding:.2rem .7rem;border-radius:12px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.5rem}
+.video-tag-hygiene{background:#dbeafe;color:#1e40af}
+.video-tag-diabete{background:#fef3c7;color:#92400e}
+.video-tag-senior{background:#d1fae5;color:#065f46}
+.video-tag-urgence{background:#fee2e2;color:#991b1b}
+.video-tag-cardio{background:#fce7f3;color:#9d174d}
+.video-tag-vaccin{background:#ede9fe;color:#5b21b6}
+.video-body h3{font-size:1.05rem;margin-bottom:.4rem}
+.video-body p{font-size:.88rem;color:var(--c-muted);line-height:1.5}
+
+/* Pillar Grid */
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.pillar-card{background:var(--c-white);border-radius:var(--radius);padding:2rem;box-shadow:var(--shadow);border:1px solid var(--c-border);display:flex;flex-direction:column;align-items:center;text-align:center;transition:transform .2s,box-shadow .2s}
+.pillar-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.pillar-illustration{margin-bottom:1rem}
+.pillar-content h3{font-size:1.1rem;margin-bottom:.3rem}
+.pillar-stat{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--c-primary);font-weight:700;margin-bottom:.5rem}
+.pillar-stat small{font-size:.85rem;font-weight:400;color:var(--c-muted)}
+.pillar-content p{font-size:.88rem;color:var(--c-muted);line-height:1.5}
+
+/* Enhanced Module Cards */
+.module-card-enhanced{position:relative}
+.module-visual{margin-top:1rem}
+.module-step-visual{display:flex;align-items:center;gap:.75rem;padding:.5rem 0}
+.step-circle{width:28px;height:28px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.step-info{text-align:left}
+.step-info strong{display:block;font-size:.88rem;color:var(--c-text)}
+.step-info span{font-size:.78rem;color:var(--c-muted)}
+.step-connector{width:2px;height:10px;border-left:2px dashed var(--c-primary-light);margin-left:13px}
+.module-alert{display:flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.7rem 1rem;background:#fef2f2;border-radius:var(--radius-sm);font-size:.82rem;color:#dc2626;font-weight:500;border:1px solid #fecaca}
+.module-fact{margin-top:1rem;padding:.7rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);font-size:.82rem;color:#065f46;border:1px solid #bbf7d0;line-height:1.5}
+.module-fact strong{display:block;margin-bottom:.15rem}
+
 /* Articles */
 .category-filter{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;justify-content:center}
 .filter-btn{padding:.4rem 1rem;border:2px solid var(--c-border);border-radius:20px;background:var(--c-white);font-size:.85rem;cursor:pointer;transition:all .2s}
@@ -249,7 +289,8 @@ textarea.form-input{resize:vertical}
 
 /* Responsive */
 @media(max-width:1024px){
-.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid{grid-template-columns:repeat(2,1fr)}
+.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid,.pillar-grid{grid-template-columns:repeat(2,1fr)}
+.video-grid{grid-template-columns:repeat(2,1fr)}
 .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:768px){
@@ -261,7 +302,8 @@ textarea.form-input{resize:vertical}
 .nav-link{padding:.75rem 1rem;width:100%}
 .hero h1{font-size:2rem}
 .hero{padding:3rem 0}
-.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid{grid-template-columns:1fr}
+.services-grid,.prevention-grid,.modules-grid,.tips-grid,.articles-grid,.info-grid,.pillar-grid{grid-template-columns:1fr}
+.video-grid{grid-template-columns:1fr}
 .form-grid{grid-template-columns:1fr}
 .contact-grid{grid-template-columns:1fr}
 .datetime-grid{grid-template-columns:1fr}

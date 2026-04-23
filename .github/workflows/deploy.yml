@@ -14,6 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: List FTP root directory
+        run: |
+          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
+          echo "---"
+          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/domains/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
+          echo "---"
+          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
+
       - name: Clean non-production files
         run: |
           rm -rf docs/ .github/ scripts/setup-secrets.sh
@@ -25,10 +33,11 @@ jobs:
           server: 145.79.20.5
           username: u398408214
           password: ${{ secrets.FTP_PASS }}
-          server-dir: /public_html/
+          server-dir: /domains/scm-garnier-infirmier.fr/public_html/
           port: 21
           protocol: ftps
           security: loose
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**

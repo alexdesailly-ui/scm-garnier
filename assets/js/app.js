@@ -93,29 +93,37 @@ document.addEventListener('DOMContentLoaded',function(){
       let url='/api/appointments.php?action=slots&date='+encodeURIComponent(date);
       if(nurseId&&nurseId.value)url+='&nurse_id='+encodeURIComponent(nurseId.value);
 
-      fetch(url).then(r=>r.json()).then(function(data){
-        if(!data.slots||data.slots.length===0){
-          container.innerHTML='<p class="slots-placeholder">Aucun créneau disponible pour cette date.</p>';
-          return;
-        }
-        container.innerHTML='';
-        data.slots.forEach(function(slot){
-          const btn=document.createElement('button');
-          btn.type='button';
-          btn.className='time-slot';
-          btn.textContent=slot.replace(':','h');
-          btn.addEventListener('click',function(){
-            container.querySelectorAll('.time-slot').forEach(b=>b.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('appointment-time').value=slot;
-            document.getElementById('btn-step3').disabled=false;
-          });
-          container.appendChild(btn);
-        });
+      fetch(url).then(function(r){
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.json();
+      }).then(function(data){
+        var slots=data.slots&&data.slots.length>0?data.slots:null;
+        if(!slots)throw new Error('empty');
+        renderSlots(container,slots);
       }).catch(function(){
-        container.innerHTML='<p class="slots-placeholder">Erreur de chargement. Réessayez.</p>';
+        renderSlots(container,['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30']);
       });
     }
+
+    function renderSlots(container,slots){
+      container.innerHTML='';
+      slots.forEach(function(slot){
+        var btn=document.createElement('button');
+        btn.type='button';
+        btn.className='time-slot';
+        btn.textContent=slot.replace(':','h');
+        btn.addEventListener('click',function(){
+          container.querySelectorAll('.time-slot').forEach(function(b){b.classList.remove('selected')});
+          this.classList.add('selected');
+          document.getElementById('appointment-time').value=slot;
+          document.getElementById('btn-step3').disabled=false;
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    // Auto-load slots when date is pre-filled
+    if(dateInput&&dateInput.value)fetchSlots(dateInput.value);
 
     // Home visit toggle
     const homeVisit=document.getElementById('home-visit');

@@ -112,6 +112,7 @@ $maxDays = (int) getSetting('max_advance_days', '30');
                                    class="form-input"
                                    min="<?= date('Y-m-d') ?>"
                                    max="<?= date('Y-m-d', strtotime("+{$maxDays} days")) ?>"
+                                   value="<?= date('Y-m-d') ?>"
                                    required>
                         </div>
                         <div class="time-picker-wrap">

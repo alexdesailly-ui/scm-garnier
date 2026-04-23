@@ -10,7 +10,7 @@ require_once __DIR__ . '/includes/header.php';
                 <span>/</span>
                 <span>Prévention Santé</span>
             </nav>
-            <h1>Prévention &amp; Éducation Santé</h1>
+            <h1>Prévention &#9764; Éducation Santé</h1>
             <p>Vidéos, conseils illustrés et tutoriels pratiques pour votre santé au quotidien.</p>
         </div>
     </section>

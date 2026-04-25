@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/../../includes/functions.php';
+
+use SCM\Core\App;
+use SCM\Middleware\TenantMiddleware;
+
 startSecureSession();
+TenantMiddleware::handle();
 
 function requireAuth(): void {
     if (empty($_SESSION['user_id']) || empty($_SESSION['user_role'])) {
@@ -23,8 +28,15 @@ function loginUser(string $email, string $password): bool {
 
     try {
         $pdo = getDB();
-        $stmt = $pdo->prepare("SELECT id, email, password_hash, full_name, role, is_active FROM users WHERE email = ?");
-        $stmt->execute([$email]);
+        $tid = App::instance()->tenantId();
+
+        if ($tid !== null) {
+            $stmt = $pdo->prepare("SELECT id, email, password_hash, full_name, role, is_active FROM users WHERE email = ? AND tenant_id = ?");
+            $stmt->execute([$email, $tid]);
+        } else {
+            $stmt = $pdo->prepare("SELECT id, email, password_hash, full_name, role, is_active FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+        }
         $user = $stmt->fetch();
 
         if (!$user || !$user['is_active'] || !password_verify($password, $user['password_hash'])) {
@@ -37,6 +49,7 @@ function loginUser(string $email, string $password): bool {
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_name'] = $user['full_name'];
         $_SESSION['user_role'] = $user['role'];
+        $_SESSION['tenant_id'] = $tid;
 
         $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
         auditLog('login_success', 'user', $user['id']);

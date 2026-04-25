@@ -1,14 +1,41 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
+
+use SCM\Core\App;
+
 adminHeader('Tableau de bord');
 
 try {
     $pdo = getDB();
-    $totalRdv = $pdo->query("SELECT COUNT(*) FROM appointments")->fetchColumn();
-    $pendingRdv = $pdo->query("SELECT COUNT(*) FROM appointments WHERE status='pending'")->fetchColumn();
-    $todayRdv = $pdo->query("SELECT COUNT(*) FROM appointments WHERE appointment_date=CURDATE()")->fetchColumn();
-    $totalContacts = $pdo->query("SELECT COUNT(*) FROM contacts WHERE is_active=1")->fetchColumn();
-    $recent = $pdo->query("SELECT * FROM appointments ORDER BY created_at DESC LIMIT 10")->fetchAll();
+    $tid = App::instance()->tenantId();
+
+    if ($tid !== null) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE tenant_id = ?");
+        $stmt->execute([$tid]);
+        $totalRdv = $stmt->fetchColumn();
+
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE tenant_id = ? AND status='pending'");
+        $stmt->execute([$tid]);
+        $pendingRdv = $stmt->fetchColumn();
+
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE tenant_id = ? AND appointment_date=CURDATE()");
+        $stmt->execute([$tid]);
+        $todayRdv = $stmt->fetchColumn();
+
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM contacts WHERE tenant_id = ? AND is_active=1");
+        $stmt->execute([$tid]);
+        $totalContacts = $stmt->fetchColumn();
+
+        $stmt = $pdo->prepare("SELECT * FROM appointments WHERE tenant_id = ? ORDER BY created_at DESC LIMIT 10");
+        $stmt->execute([$tid]);
+        $recent = $stmt->fetchAll();
+    } else {
+        $totalRdv = $pdo->query("SELECT COUNT(*) FROM appointments")->fetchColumn();
+        $pendingRdv = $pdo->query("SELECT COUNT(*) FROM appointments WHERE status='pending'")->fetchColumn();
+        $todayRdv = $pdo->query("SELECT COUNT(*) FROM appointments WHERE appointment_date=CURDATE()")->fetchColumn();
+        $totalContacts = $pdo->query("SELECT COUNT(*) FROM contacts WHERE is_active=1")->fetchColumn();
+        $recent = $pdo->query("SELECT * FROM appointments ORDER BY created_at DESC LIMIT 10")->fetchAll();
+    }
 } catch (PDOException $e) {
     $totalRdv=$pendingRdv=$todayRdv=$totalContacts=0;$recent=[];
 }

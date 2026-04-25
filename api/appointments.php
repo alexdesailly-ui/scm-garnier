@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
+
+use SCM\Core\App;
+use SCM\Middleware\TenantMiddleware;
+
 startSecureSession();
+TenantMiddleware::handle();
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -50,9 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $pdo = getDB();
+        $tid = App::instance()->tenantId();
         $ref = generateReference();
-        $stmt = $pdo->prepare("INSERT INTO appointments (reference_code, patient_first_name, patient_last_name, patient_email, patient_phone, care_type, appointment_date, appointment_time, nurse_id, address, notes, is_home_visit, consent_rgpd, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,'pending')");
-        $stmt->execute([$ref, $firstName, $lastName, $email, $phone, $careType, $date, $time.':00', $nurseId, $address, $notes, $homeVisit, $consent]);
+        $stmt = $pdo->prepare("INSERT INTO appointments (tenant_id, reference_code, patient_first_name, patient_last_name, patient_email, patient_phone, care_type, appointment_date, appointment_time, nurse_id, address, notes, is_home_visit, consent_rgpd, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,'pending')");
+        $stmt->execute([$tid, $ref, $firstName, $lastName, $email, $phone, $careType, $date, $time.':00', $nurseId, $address, $notes, $homeVisit, $consent]);
 
         auditLog('appointment_created', 'appointment', (int)$pdo->lastInsertId(), $ref);
 

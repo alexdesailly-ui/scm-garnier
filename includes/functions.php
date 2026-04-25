@@ -5,6 +5,8 @@
 
 require_once __DIR__ . '/config.php';
 
+use SCM\Core\App;
+
 /**
  * Start a secure session
  */
@@ -39,18 +41,25 @@ function verifyCSRF(string $token): bool {
  */
 function getSetting(string $key, string $default = ''): string {
     static $cache = [];
-    if (isset($cache[$key])) return $cache[$key];
+    $tid = App::instance()->tenantId();
+    $cacheKey = ($tid ?? 'null') . ':' . $key;
+    if (isset($cache[$cacheKey])) return $cache[$cacheKey];
 
     try {
         $pdo = getDB();
-        $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
-        $stmt->execute([$key]);
+        if ($tid !== null) {
+            $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ? AND tenant_id = ?");
+            $stmt->execute([$key, $tid]);
+        } else {
+            $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
+            $stmt->execute([$key]);
+        }
         $val = $stmt->fetchColumn();
-        $cache[$key] = $val !== false ? $val : $default;
+        $cache[$cacheKey] = $val !== false ? $val : $default;
     } catch (PDOException $e) {
-        $cache[$key] = $default;
+        $cache[$cacheKey] = $default;
     }
-    return $cache[$key];
+    return $cache[$cacheKey];
 }
 
 /**
@@ -59,7 +68,14 @@ function getSetting(string $key, string $default = ''): string {
 function getAllSettings(): array {
     try {
         $pdo = getDB();
-        $rows = $pdo->query("SELECT setting_key, setting_value FROM settings")->fetchAll();
+        $tid = App::instance()->tenantId();
+        if ($tid !== null) {
+            $stmt = $pdo->prepare("SELECT setting_key, setting_value FROM settings WHERE tenant_id = ?");
+            $stmt->execute([$tid]);
+            $rows = $stmt->fetchAll();
+        } else {
+            $rows = $pdo->query("SELECT setting_key, setting_value FROM settings")->fetchAll();
+        }
         $settings = [];
         foreach ($rows as $row) {
             $settings[$row['setting_key']] = $row['setting_value'];
@@ -76,6 +92,11 @@ function getAllSettings(): array {
 function updateSetting(string $key, string $value): bool {
     try {
         $pdo = getDB();
+        $tid = App::instance()->tenantId();
+        if ($tid !== null) {
+            $stmt = $pdo->prepare("INSERT INTO settings (tenant_id, setting_key, setting_value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
+            return $stmt->execute([$tid, $key, $value]);
+        }
         $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
         return $stmt->execute([$key, $value]);
     } catch (PDOException $e) {
@@ -125,8 +146,10 @@ function auditLog(string $action, string $entityType, ?int $entityId = null, str
     try {
         startSecureSession();
         $pdo = getDB();
-        $stmt = $pdo->prepare("INSERT INTO audit_log (user_id, action, entity_type, entity_id, details, ip_address) VALUES (?, ?, ?, ?, ?, ?)");
+        $tid = App::instance()->tenantId();
+        $stmt = $pdo->prepare("INSERT INTO audit_log (tenant_id, user_id, action, entity_type, entity_id, details, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
+            $tid,
             $_SESSION['user_id'] ?? null,
             $action,
             $entityType,
@@ -145,8 +168,14 @@ function auditLog(string $action, string $entityType, ?int $entityId = null, str
 function isLoginLocked(string $email): bool {
     try {
         $pdo = getDB();
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM audit_log WHERE action = 'login_failed' AND details = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? MINUTE)");
-        $stmt->execute([$email, LOGIN_LOCKOUT_MINUTES]);
+        $tid = App::instance()->tenantId();
+        if ($tid !== null) {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM audit_log WHERE tenant_id = ? AND action = 'login_failed' AND details = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? MINUTE)");
+            $stmt->execute([$tid, $email, LOGIN_LOCKOUT_MINUTES]);
+        } else {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM audit_log WHERE action = 'login_failed' AND details = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? MINUTE)");
+            $stmt->execute([$email, LOGIN_LOCKOUT_MINUTES]);
+        }
         return $stmt->fetchColumn() >= MAX_LOGIN_ATTEMPTS;
     } catch (PDOException $e) {
         return false;
@@ -177,12 +206,17 @@ function formatTimeFR(string $time): string {
 function getAvailableSlots(string $date, ?int $nurseId = null): array {
     try {
         $pdo = getDB();
+        $tid = App::instance()->tenantId();
         $dayOfWeek = date('w', strtotime($date));
         $duration = (int) getSetting('slot_duration', '30');
 
         // Get schedule for that day of week
         $sql = "SELECT start_time, end_time FROM available_slots WHERE day_of_week = ? AND is_active = 1";
         $params = [$dayOfWeek];
+        if ($tid !== null) {
+            $sql .= " AND tenant_id = ?";
+            $params[] = $tid;
+        }
         if ($nurseId) {
             $sql .= " AND (nurse_id = ? OR nurse_id IS NULL)";
             $params[] = $nurseId;
@@ -196,6 +230,10 @@ function getAvailableSlots(string $date, ?int $nurseId = null): array {
         // Check blocked dates
         $sql2 = "SELECT COUNT(*) FROM blocked_dates WHERE blocked_date = ?";
         $params2 = [$date];
+        if ($tid !== null) {
+            $sql2 .= " AND tenant_id = ?";
+            $params2[] = $tid;
+        }
         if ($nurseId) {
             $sql2 .= " AND (nurse_id = ? OR nurse_id IS NULL)";
             $params2[] = $nurseId;
@@ -207,6 +245,10 @@ function getAvailableSlots(string $date, ?int $nurseId = null): array {
         // Get already booked slots
         $sql3 = "SELECT appointment_time FROM appointments WHERE appointment_date = ? AND status IN ('pending','confirmed')";
         $params3 = [$date];
+        if ($tid !== null) {
+            $sql3 .= " AND tenant_id = ?";
+            $params3[] = $tid;
+        }
         if ($nurseId) {
             $sql3 .= " AND nurse_id = ?";
             $params3[] = $nurseId;
@@ -223,7 +265,6 @@ function getAvailableSlots(string $date, ?int $nurseId = null): array {
             while ($start + ($duration * 60) <= $end) {
                 $timeStr = date('H:i:s', $start);
                 if (!in_array($timeStr, $booked)) {
-                    // Don't show past slots for today
                     if ($date === date('Y-m-d') && $start <= time()) {
                         $start += $duration * 60;
                         continue;
@@ -265,6 +306,12 @@ function isValidPhone(string $phone): bool {
 function getActiveContacts(): array {
     try {
         $pdo = getDB();
+        $tid = App::instance()->tenantId();
+        if ($tid !== null) {
+            $stmt = $pdo->prepare("SELECT * FROM contacts WHERE tenant_id = ? AND is_active = 1 ORDER BY display_order, full_name");
+            $stmt->execute([$tid]);
+            return $stmt->fetchAll();
+        }
         return $pdo->query("SELECT * FROM contacts WHERE is_active = 1 ORDER BY display_order, full_name")->fetchAll();
     } catch (PDOException $e) {
         return [];

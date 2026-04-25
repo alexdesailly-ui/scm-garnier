@@ -1,14 +1,22 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
+
+use SCM\Core\App;
+
 requireRole('admin');
 
 $msg = '';
 $pdo = getDB();
+$tid = App::instance()->tenantId();
 
 // Delete
 if (isset($_GET['delete']) && verifyCSRF($_GET['token'] ?? '')) {
     $id = (int)$_GET['delete'];
-    $pdo->prepare("UPDATE contacts SET is_active=0 WHERE id=?")->execute([$id]);
+    if ($tid !== null) {
+        $pdo->prepare("UPDATE contacts SET is_active=0 WHERE id=? AND tenant_id=?")->execute([$id, $tid]);
+    } else {
+        $pdo->prepare("UPDATE contacts SET is_active=0 WHERE id=?")->execute([$id]);
+    }
     auditLog('contact_deleted', 'contact', $id);
     $msg = 'Contact désactivé.';
 }
@@ -25,24 +33,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCSRF($_POST['csrf_token'] ?? 
 
     if ($name && $phone) {
         if ($id > 0) {
-            $stmt = $pdo->prepare("UPDATE contacts SET full_name=?,phone=?,whatsapp_number=?,email=?,role=?,display_order=? WHERE id=?");
-            $stmt->execute([$name,$phone,$wa,$email,$role,$order,$id]);
+            if ($tid !== null) {
+                $stmt = $pdo->prepare("UPDATE contacts SET full_name=?,phone=?,whatsapp_number=?,email=?,role=?,display_order=? WHERE id=? AND tenant_id=?");
+                $stmt->execute([$name,$phone,$wa,$email,$role,$order,$id,$tid]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE contacts SET full_name=?,phone=?,whatsapp_number=?,email=?,role=?,display_order=? WHERE id=?");
+                $stmt->execute([$name,$phone,$wa,$email,$role,$order,$id]);
+            }
             auditLog('contact_updated', 'contact', $id);
             $msg = 'Contact mis à jour.';
         } else {
-            $stmt = $pdo->prepare("INSERT INTO contacts (full_name,phone,whatsapp_number,email,role,display_order) VALUES(?,?,?,?,?,?)");
-            $stmt->execute([$name,$phone,$wa,$email,$role,$order]);
+            $stmt = $pdo->prepare("INSERT INTO contacts (tenant_id,full_name,phone,whatsapp_number,email,role,display_order) VALUES(?,?,?,?,?,?,?)");
+            $stmt->execute([$tid,$name,$phone,$wa,$email,$role,$order]);
             auditLog('contact_created', 'contact', (int)$pdo->lastInsertId());
             $msg = 'Contact ajouté.';
         }
     }
 }
 
-$contacts = $pdo->query("SELECT * FROM contacts WHERE is_active=1 ORDER BY display_order,full_name")->fetchAll();
+if ($tid !== null) {
+    $stmt = $pdo->prepare("SELECT * FROM contacts WHERE tenant_id=? AND is_active=1 ORDER BY display_order,full_name");
+    $stmt->execute([$tid]);
+    $contacts = $stmt->fetchAll();
+} else {
+    $contacts = $pdo->query("SELECT * FROM contacts WHERE is_active=1 ORDER BY display_order,full_name")->fetchAll();
+}
 $edit = null;
 if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare("SELECT * FROM contacts WHERE id=?");
-    $stmt->execute([(int)$_GET['edit']]);
+    if ($tid !== null) {
+        $stmt = $pdo->prepare("SELECT * FROM contacts WHERE id=? AND tenant_id=?");
+        $stmt->execute([(int)$_GET['edit'], $tid]);
+    } else {
+        $stmt = $pdo->prepare("SELECT * FROM contacts WHERE id=?");
+        $stmt->execute([(int)$_GET['edit']]);
+    }
     $edit = $stmt->fetch();
 }
 $csrf = generateCSRF();

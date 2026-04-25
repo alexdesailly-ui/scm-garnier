@@ -1,8 +1,12 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
+
+use SCM\Core\App;
+
 requireAuth();
 
 $pdo = getDB();
+$tid = App::instance()->tenantId();
 $msg = '';
 
 // Update status
@@ -11,7 +15,11 @@ if (isset($_GET['status'], $_GET['id']) && verifyCSRF($_GET['token'] ?? '')) {
     $status = $_GET['status'];
     $valid = ['pending','confirmed','completed','cancelled'];
     if (in_array($status, $valid)) {
-        $pdo->prepare("UPDATE appointments SET status=? WHERE id=?")->execute([$status, $id]);
+        if ($tid !== null) {
+            $pdo->prepare("UPDATE appointments SET status=? WHERE id=? AND tenant_id=?")->execute([$status, $id, $tid]);
+        } else {
+            $pdo->prepare("UPDATE appointments SET status=? WHERE id=?")->execute([$status, $id]);
+        }
         auditLog('appointment_status_changed', 'appointment', $id, $status);
         $msg = 'Statut mis à jour.';
     }
@@ -19,13 +27,21 @@ if (isset($_GET['status'], $_GET['id']) && verifyCSRF($_GET['token'] ?? '')) {
 
 // Filters
 $filter = $_GET['filter'] ?? 'all';
-$where = '';
+$conditions = [];
 $params = [];
-if ($filter === 'today') { $where = "WHERE appointment_date = CURDATE()"; }
-elseif ($filter === 'pending') { $where = "WHERE status = 'pending'"; }
-elseif ($filter === 'upcoming') { $where = "WHERE appointment_date >= CURDATE() AND status IN ('pending','confirmed')"; }
 
-$appointments = $pdo->query("SELECT a.*, c.full_name as nurse_name FROM appointments a LEFT JOIN contacts c ON a.nurse_id=c.id $where ORDER BY appointment_date DESC, appointment_time DESC")->fetchAll();
+if ($tid !== null) {
+    $conditions[] = "a.tenant_id = ?";
+    $params[] = $tid;
+}
+if ($filter === 'today') { $conditions[] = "a.appointment_date = CURDATE()"; }
+elseif ($filter === 'pending') { $conditions[] = "a.status = 'pending'"; }
+elseif ($filter === 'upcoming') { $conditions[] = "a.appointment_date >= CURDATE() AND a.status IN ('pending','confirmed')"; }
+
+$where = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+$stmt = $pdo->prepare("SELECT a.*, c.full_name as nurse_name FROM appointments a LEFT JOIN contacts c ON a.nurse_id=c.id $where ORDER BY a.appointment_date DESC, a.appointment_time DESC");
+$stmt->execute($params);
+$appointments = $stmt->fetchAll();
 
 $statusLabels = ['pending'=>'En attente','confirmed'=>'Confirmé','completed'=>'Terminé','cancelled'=>'Annulé'];
 $statusClasses = ['pending'=>'badge-pending','confirmed'=>'badge-confirmed','completed'=>'badge-completed','cancelled'=>'badge-cancelled'];

@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . '/functions.php';
+
+use SCM\Middleware\TenantMiddleware;
+use SCM\Security\Headers;
+
 startSecureSession();
+TenantMiddleware::handle();
+Headers::send();
 
 $siteName = getSetting('site_name', SITE_NAME);
 $phone = getSetting('phone', '04 93 00 00 00');

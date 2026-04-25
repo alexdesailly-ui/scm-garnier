@@ -1,22 +1,26 @@
 <?php
-/**
- * Database migration script - SCM Garnier Infirmier
- * Run: php scripts/migrate.php
- * Safe to re-run (uses IF NOT EXISTS)
- */
 
-require_once __DIR__ . '/../includes/config.php';
+declare(strict_types=1);
 
-echo "=== SCM Garnier - Migration de la base de données ===\n\n";
+require_once dirname(__DIR__) . '/src/autoload.php';
+
+use SCM\Core\App;
+use SCM\Migration\MigrationRunner;
+
+echo "SCM Garnier — Database Migration\n";
+echo str_repeat('─', 40) . "\n";
+
+$app = App::boot();
 
 try {
-    $pdo = getDB();
-    echo "[OK] Connexion MySQL réussie (" . DB_HOST . "/" . DB_NAME . ")\n";
+    $pdo = $app->db()->pdo();
+    echo "[OK] Connected to MySQL\n\n";
 } catch (PDOException $e) {
-    echo "[ERREUR] Connexion impossible : " . $e->getMessage() . "\n";
+    echo "[FAIL] " . $e->getMessage() . "\n";
     exit(1);
 }
 
+// Phase 1: Run legacy table creation (idempotent via IF NOT EXISTS)
 $tables = [
     'users' => "
         CREATE TABLE IF NOT EXISTS users (
@@ -136,44 +140,58 @@ $tables = [
 foreach ($tables as $name => $sql) {
     try {
         $pdo->exec($sql);
-        echo "[OK] Table '$name' prête\n";
+        echo "  [OK] $name\n";
     } catch (PDOException $e) {
-        echo "[ERREUR] Table '$name' : " . $e->getMessage() . "\n";
+        echo "  [FAIL] $name — " . $e->getMessage() . "\n";
     }
 }
 
-// Insert default settings if empty
-$count = $pdo->query("SELECT COUNT(*) FROM settings")->fetchColumn();
-if ($count == 0) {
-    echo "\n--- Insertion des paramètres par défaut ---\n";
+// Phase 2: Run versioned migrations (tenants, tenant_id, etc.)
+echo "\n--- Versioned migrations ---\n";
+$runner = new MigrationRunner($app->db());
+$results = $runner->run();
+
+if (empty($results)) {
+    echo "  Nothing to migrate — up to date.\n";
+} else {
+    foreach ($results as $r) {
+        $icon = $r['status'] === 'ok' ? 'OK' : 'FAIL';
+        echo "  [{$icon}] {$r['migration']}";
+        if (isset($r['message'])) {
+            echo " — {$r['message']}";
+        }
+        echo "\n";
+    }
+}
+
+// Phase 3: Seed defaults if empty
+$count = (int) $pdo->query("SELECT COUNT(*) FROM settings")->fetchColumn();
+if ($count === 0) {
+    echo "\n--- Seeding defaults ---\n";
     $defaults = [
         'site_name'        => 'Cabinet Infirmier Garnier',
         'site_description' => 'Cabinet infirmier à Nice - Soins à domicile et au cabinet',
         'address'          => '123 Avenue Jean Médecin, 06000 Nice',
         'phone'            => '04 93 00 00 00',
         'email'            => 'contact@cabinet-garnier.fr',
-        'facebook_url'     => '',
-        'instagram_url'    => '',
-        'whatsapp_number'  => '',
         'opening_hours'    => 'Lundi - Vendredi : 7h00 - 19h00 | Samedi : 8h00 - 12h00',
         'slot_duration'    => '30',
         'max_advance_days' => '30',
     ];
     $stmt = $pdo->prepare("INSERT IGNORE INTO settings (setting_key, setting_value) VALUES (?, ?)");
-    foreach ($defaults as $key => $val) {
-        $stmt->execute([$key, $val]);
+    foreach ($defaults as $k => $v) {
+        $stmt->execute([$k, $v]);
     }
-    echo "[OK] Paramètres par défaut insérés\n";
+
+    $slotStmt = $pdo->prepare("INSERT INTO available_slots (nurse_id, day_of_week, start_time, end_time) VALUES (NULL, ?, ?, ?)");
+    for ($d = 1; $d <= 5; $d++) {
+        $slotStmt->execute([$d, '07:00', '19:00']);
+    }
+    $slotStmt->execute([6, '08:00', '12:00']);
+    echo "  [OK] Default settings + time slots\n";
 }
 
-// Insert default slots if empty
-$slotCount = $pdo->query("SELECT COUNT(*) FROM available_slots")->fetchColumn();
-if ($slotCount == 0) {
-    echo "\n--- Insertion des créneaux par défaut ---\n";
-    $stmt = $pdo->prepare("INSERT INTO available_slots (nurse_id, day_of_week, start_time, end_time) VALUES (NULL, ?, ?, ?)");
-    for ($d = 1; $d <= 5; $d++) $stmt->execute([$d, '07:00', '19:00']);
-    $stmt->execute([6, '08:00', '12:00']);
-    echo "[OK] Créneaux Lun-Ven 7h-19h + Sam 8h-12h\n";
-}
-
-echo "\n=== Migration terminée avec succès ===\n";
+$applied = $runner->getApplied();
+echo "\n" . str_repeat('─', 40) . "\n";
+echo "Total versioned migrations: " . count($applied) . "\n";
+echo "Done.\n";

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace SCM\Core;
 
+use SCM\Tenant\Tenant;
+
 final class App
 {
     private static ?self $instance = null;
 
     private Config $config;
     private ?Database $db = null;
+    private ?Tenant $tenant = null;
     private bool $debug;
 
     private function __construct(Config $config)
@@ -60,6 +63,21 @@ final class App
         }
 
         return $this->db;
+    }
+
+    public function tenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(Tenant $tenant): void
+    {
+        $this->tenant = $tenant;
+    }
+
+    public function tenantId(): ?int
+    {
+        return $this->tenant?->id;
     }
 
     public function isDebug(): bool

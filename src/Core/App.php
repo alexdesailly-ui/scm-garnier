@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace SCM\Core;
 
+use SCM\Model\Appointment;
+use SCM\Model\Contact;
+use SCM\Model\Setting;
+use SCM\Model\User;
 use SCM\Tenant\Tenant;
 
 final class App
@@ -14,6 +18,7 @@ final class App
     private ?Database $db = null;
     private ?Tenant $tenant = null;
     private bool $debug;
+    private array $models = [];
 
     private function __construct(Config $config)
     {
@@ -78,6 +83,26 @@ final class App
     public function tenantId(): ?int
     {
         return $this->tenant?->id;
+    }
+
+    public function appointments(): Appointment
+    {
+        return $this->models[Appointment::class] ??= new Appointment($this->db());
+    }
+
+    public function contacts(): Contact
+    {
+        return $this->models[Contact::class] ??= new Contact($this->db());
+    }
+
+    public function settings(): Setting
+    {
+        return $this->models[Setting::class] ??= new Setting($this->db());
+    }
+
+    public function users(): User
+    {
+        return $this->models[User::class] ??= new User($this->db());
     }
 
     public function isDebug(): bool

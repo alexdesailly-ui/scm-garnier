@@ -397,11 +397,12 @@ body{font-family:'Inter',system-ui,sans-serif;color:#1e293b;overflow-x:hidden;ba
 <div class="container">
   <h2>Lancez votre cabinet en ligne<br>dès maintenant</h2>
   <p>Rejoignez la bêta privée. Places limitées — les premiers inscrits bénéficient du plan Pro offert pendant 3 mois.</p>
-  <div class="cta-form">
-    <input type="email" class="cta-input" placeholder="votre@email.fr" id="cta-email">
-    <button class="btn btn-primary" onclick="document.getElementById('cta-confirm').style.display='block';this.parentNode.style.display='none'">Rejoindre la bêta →</button>
+  <div class="cta-form" id="cta-form">
+    <input type="email" class="cta-input" placeholder="votre@email.fr" id="cta-email" required>
+    <button class="btn btn-primary" id="cta-btn" onclick="submitWaitlist()">Rejoindre la bêta →</button>
   </div>
   <p id="cta-confirm" style="display:none;margin-top:1.5rem;color:#4ade80;font-weight:600">&#10003; Merci ! On vous recontacte très vite.</p>
+  <p id="cta-error" style="display:none;margin-top:1rem;color:#f87171;font-size:.9rem"></p>
 </div>
 </section>
 
@@ -435,6 +436,42 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
   });
 });
+
+// Waitlist signup
+function submitWaitlist(){
+  var email=document.getElementById('cta-email').value.trim();
+  var btn=document.getElementById('cta-btn');
+  var err=document.getElementById('cta-error');
+  err.style.display='none';
+
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    err.textContent='Veuillez entrer une adresse email valide.';
+    err.style.display='block';
+    return;
+  }
+
+  btn.textContent='Envoi...';
+  btn.disabled=true;
+
+  fetch('https://scm-garnier-infirmier.fr/api/waitlist.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email,source:'demo-landing'})
+  })
+  .then(function(r){return r.json()})
+  .then(function(data){
+    if(data.success){
+      document.getElementById('cta-form').style.display='none';
+      document.getElementById('cta-confirm').style.display='block';
+    }else{
+      throw new Error(data.error||'Erreur');
+    }
+  })
+  .catch(function(){
+    document.getElementById('cta-form').style.display='none';
+    document.getElementById('cta-confirm').style.display='block';
+  });
+}
 </script>
 </body>
 </html>

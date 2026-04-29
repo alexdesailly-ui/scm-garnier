@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SCM\Core;
 
+use SCM\Billing\BillingService;
+use SCM\Billing\Subscription;
 use SCM\Model\Appointment;
 use SCM\Model\Contact;
 use SCM\Model\Setting;
@@ -17,6 +19,8 @@ final class App
     private Config $config;
     private ?Database $db = null;
     private ?Tenant $tenant = null;
+    private ?Subscription $subscription = null;
+    private bool $subscriptionRestricted = false;
     private bool $debug;
     private array $models = [];
 
@@ -103,6 +107,31 @@ final class App
     public function users(): User
     {
         return $this->models[User::class] ??= new User($this->db());
+    }
+
+    public function subscription(): ?Subscription
+    {
+        return $this->subscription;
+    }
+
+    public function setSubscription(Subscription $sub): void
+    {
+        $this->subscription = $sub;
+    }
+
+    public function isSubscriptionRestricted(): bool
+    {
+        return $this->subscriptionRestricted;
+    }
+
+    public function setSubscriptionRestricted(bool $restricted): void
+    {
+        $this->subscriptionRestricted = $restricted;
+    }
+
+    public function billing(): BillingService
+    {
+        return BillingService::create();
     }
 
     public function isDebug(): bool

@@ -27,4 +27,11 @@ return [
 
     // Mode debug (false en production)
     'APP_DEBUG' => false,
+
+    // Stripe (hPanel > ou dashboard.stripe.com)
+    'STRIPE_SECRET_KEY' => 'sk_test_...',
+    'STRIPE_PUBLISHABLE_KEY' => 'pk_test_...',
+    'STRIPE_WEBHOOK_SECRET' => 'whsec_...',
+    'STRIPE_PRICE_PRO' => 'price_...',
+    'STRIPE_PRICE_ENTERPRISE' => 'price_...',
 ];

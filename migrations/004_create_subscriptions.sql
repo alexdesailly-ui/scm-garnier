@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS subscriptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT NOT NULL,
+    stripe_subscription_id VARCHAR(255) NOT NULL DEFAULT '',
+    stripe_customer_id VARCHAR(255) NOT NULL DEFAULT '',
+    stripe_price_id VARCHAR(255) NOT NULL DEFAULT '',
+    plan ENUM('starter','pro','enterprise') NOT NULL DEFAULT 'starter',
+    status ENUM('trialing','active','past_due','cancelled','expired') NOT NULL DEFAULT 'trialing',
+    trial_ends_at DATETIME NULL,
+    current_period_start DATETIME NULL,
+    current_period_end DATETIME NULL,
+    cancel_at_period_end TINYINT(1) NOT NULL DEFAULT 0,
+    cancelled_at DATETIME NULL,
+    ends_at DATETIME NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_tenant (tenant_id),
+    UNIQUE KEY uk_stripe_sub (stripe_subscription_id),
+    INDEX idx_status (status),
+    INDEX idx_ends_at (ends_at),
+    CONSTRAINT fk_subscriptions_tenant FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

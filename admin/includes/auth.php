@@ -2,10 +2,12 @@
 require_once __DIR__ . '/../../includes/functions.php';
 
 use SCM\Core\App;
+use SCM\Middleware\SubscriptionMiddleware;
 use SCM\Middleware\TenantMiddleware;
 
 startSecureSession();
 TenantMiddleware::handle();
+SubscriptionMiddleware::handle();
 
 function requireAuth(): void {
     if (empty($_SESSION['user_id']) || empty($_SESSION['user_role'])) {

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 
+use SCM\Billing\BillingService;
+use SCM\Billing\Plan;
 use SCM\Core\App;
 use SCM\Tenant\TenantOnboarding;
 
@@ -15,17 +17,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Session expirée. Rechargez la page.';
     } else {
         try {
+            $plan = $_POST['plan'] ?? 'starter';
             $onboarding = new TenantOnboarding(App::instance()->db());
             $result = $onboarding->provision([
                 'slug' => $_POST['slug'] ?? '',
                 'name' => $_POST['name'] ?? '',
                 'email' => $_POST['email'] ?? '',
                 'password' => $_POST['password'] ?? '',
-                'plan' => $_POST['plan'] ?? 'starter',
+                'plan' => $plan,
             ]);
 
             if (!$result['success']) {
                 $errors = $result['errors'];
+            } elseif (Plan::requiresPayment($plan)) {
+                $billing = BillingService::create();
+                $checkoutUrl = $billing->createCheckoutUrl($result['tenant']->id, $plan);
+                if ($checkoutUrl !== '') {
+                    header("Location: {$checkoutUrl}");
+                    exit;
+                }
             }
         } catch (\PDOException $e) {
             $errors[] = 'Erreur de base de données. Veuillez réessayer.';

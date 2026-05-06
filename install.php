@@ -7,6 +7,13 @@
 
 require_once __DIR__ . '/includes/config.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $errors = [];
 $success = false;
 
@@ -197,10 +204,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-session_start();
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

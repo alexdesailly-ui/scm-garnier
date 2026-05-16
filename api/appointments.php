@@ -2,7 +2,9 @@
 require_once __DIR__ . '/../includes/functions.php';
 
 use SCM\Core\App;
+use SCM\Middleware\QuotaMiddleware;
 use SCM\Middleware\TenantMiddleware;
+use SCM\Quota\QuotaExceededException;
 
 startSecureSession();
 TenantMiddleware::handle();
@@ -54,12 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        QuotaMiddleware::enforce('appointments_per_month');
+    } catch (QuotaExceededException $e) {
+        jsonResponse([
+            'error' => 'Ce cabinet a atteint son quota de rendez-vous pour le mois. Merci de réessayer plus tard ou de contacter le cabinet directement.',
+            'code'  => 'quota_exceeded',
+        ], 402);
+    }
+
+    try {
         $pdo = getDB();
         $tid = App::instance()->tenantId();
         $ref = generateReference();
         $stmt = $pdo->prepare("INSERT INTO appointments (tenant_id, reference_code, patient_first_name, patient_last_name, patient_email, patient_phone, care_type, appointment_date, appointment_time, nurse_id, address, notes, is_home_visit, consent_rgpd, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,'pending')");
         $stmt->execute([$tid, $ref, $firstName, $lastName, $email, $phone, $careType, $date, $time.':00', $nurseId, $address, $notes, $homeVisit, $consent]);
 
+        QuotaMiddleware::record('appointments_per_month');
         auditLog('appointment_created', 'appointment', (int)$pdo->lastInsertId(), $ref);
 
         jsonResponse([

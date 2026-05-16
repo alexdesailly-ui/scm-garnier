@@ -4,21 +4,25 @@ declare(strict_types=1);
 
 namespace SCM\Billing\Stripe;
 
-use SCM\Billing\SubscriptionRepository;
 use SCM\Billing\InvoiceRepository;
+use SCM\Billing\Plan;
+use SCM\Billing\SubscriptionRepository;
 use SCM\Core\Database;
+use SCM\Tenant\TenantRepository;
 
 final class WebhookHandler
 {
     private Database $db;
     private SubscriptionRepository $subscriptions;
     private InvoiceRepository $invoices;
+    private TenantRepository $tenants;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
         $this->subscriptions = new SubscriptionRepository($db);
         $this->invoices = new InvoiceRepository($db);
+        $this->tenants = new TenantRepository($db);
     }
 
     public function handle(array $event): void
@@ -98,6 +102,8 @@ final class WebhookHandler
             return;
         }
 
+        $existing = $this->subscriptions->findByStripeId($stripeId);
+
         $data = [
             'status' => $status,
             'cancel_at_period_end' => ($sub['cancel_at_period_end'] ?? false) ? 1 : 0,
@@ -122,6 +128,16 @@ final class WebhookHandler
         }
 
         $this->subscriptions->updateFromStripe($stripeId, $data);
+
+        // If the paid period has actually ended, drop the tenant back to the
+        // free plan so feature gating reflects reality. We leave grace-period
+        // and past_due alone (the tenant still has access during retries).
+        if ($existing !== null && in_array($status, ['cancelled', 'expired'], true)) {
+            $endsAt = $data['ends_at'] ?? $existing->endsAt;
+            if ($endsAt !== null && strtotime($endsAt) <= time()) {
+                $this->tenants->updatePlan($existing->tenantId, Plan::STARTER);
+            }
+        }
     }
 
     private function onSubscriptionDeleted(array $event): void
@@ -133,10 +149,16 @@ final class WebhookHandler
             return;
         }
 
+        $existing = $this->subscriptions->findByStripeId($stripeId);
+
         $this->subscriptions->updateFromStripe($stripeId, [
             'status' => 'cancelled',
             'ends_at' => date('Y-m-d H:i:s'),
         ]);
+
+        if ($existing !== null) {
+            $this->tenants->updatePlan($existing->tenantId, Plan::STARTER);
+        }
     }
 
     private function onInvoicePaid(array $event): void

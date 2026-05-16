@@ -1,0 +1,40 @@
+name: Deploy to Hostinger (staging)
+
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy SCM Garnier staging to Hostinger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Clean non-production files
+        run: |
+          rm -rf docs/ .github/ scripts/setup-secrets.sh
+          rm -f .env.deploy
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 145.79.20.5
+          username: u398408214
+          password: ${{ secrets.FTP_PASS }}
+          server-dir: /domains/scm-garnier-infirmier.fr/public_html/staging/
+          port: 21
+          protocol: ftps
+          security: loose
+          dangerous-clean-slate: true
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/docs/**
+            **/.env.deploy
+            **/env.example.php
+            **/env.php
+            **/uploads/**

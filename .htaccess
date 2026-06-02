@@ -35,6 +35,16 @@
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # ── Maintenance mode (site en travaux) ──────────────────────────────
+    # Pour DÉSACTIVER la maintenance : commenter (préfixer par #) les 5
+    # lignes ci-dessous. L'accès admin reste disponible pendant la maintenance.
+    RewriteCond %{REQUEST_URI} !^/maintenance\.php$ [NC]
+    RewriteCond %{REQUEST_URI} !^/admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^/uploads/ [NC]
+    RewriteRule ^ /maintenance.php [L]
+    # ────────────────────────────────────────────────────────────────────
+
     # Remove .php extension (clean URLs)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME}.php -f

@@ -172,7 +172,7 @@ if ($count === 0) {
         'site_name'        => 'Cabinet Infirmier Garnier',
         'site_description' => 'Cabinet infirmier à Nice - Soins à domicile et au cabinet',
         'address'          => '123 Avenue Jean Médecin, 06000 Nice',
-        'phone'            => '04 93 00 00 00',
+        'phone'            => '',
         'email'            => 'contact@cabinet-garnier.fr',
         'opening_hours'    => 'Lundi - Vendredi : 7h00 - 19h00 | Samedi : 8h00 - 12h00',
         'slot_duration'    => '30',

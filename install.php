@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'site_name'        => $site_name,
                 'site_description' => 'Cabinet infirmier à Nice - Soins à domicile et au cabinet',
                 'address'          => '123 Avenue Jean Médecin, 06000 Nice',
-                'phone'            => '04 93 00 00 00',
+                'phone'            => '',
                 'email'            => $admin_email,
                 'facebook_url'     => '',
                 'instagram_url'    => '',

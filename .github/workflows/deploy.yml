@@ -3,8 +3,8 @@ name: Deploy to Hostinger
 on:
   push:
     branches:
-      - claude/nursing-clinic-website-4lu80
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -14,20 +14,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List FTP root directory
+      - name: List public_html BEFORE deploy
         run: |
-          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
-          echo "---"
-          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/domains/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
-          echo "---"
-          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
+          echo "Contenu de public_html avant déploiement :"
+          curl -sS --ftp-ssl -k --list-only \
+            "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/public_html/" \
+            --user "u398408214:${{ secrets.FTP_PASS }}" || true
+
+      - name: Remove maintenance placeholder files
+        run: |
+          BASE="ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/public_html/"
+          DIR="/domains/scm-garnier-infirmier.fr/public_html"
+          for f in index.html index.htm maintenance.html maintenance.htm maintenance.php coming-soon.html .maintenance; do
+            echo "Suppression de $f (si présent)..."
+            curl -sS --ftp-ssl -k \
+              --user "u398408214:${{ secrets.FTP_PASS }}" \
+              -Q "DELE $DIR/$f" \
+              "$BASE" && echo "  -> supprimé" || echo "  -> absent / ignoré"
+          done
 
       - name: Clean non-production files
         run: |
           rm -rf docs/ .github/ scripts/setup-secrets.sh
-          rm -f preview.html env.example.php .env.deploy
+          rm -f preview.html env.example.php .env.deploy maintenance.html
 
-      - name: Deploy via FTP
+      - name: Deploy via FTP (no clean-slate, preserves env.php & uploads)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: 145.79.20.5
@@ -37,11 +48,20 @@ jobs:
           port: 21
           protocol: ftps
           security: loose
-          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**
             **/docs/**
             **/.env.deploy
-            **/preview.html
+            **/env.php
             **/env.example.php
+            **/preview.html
+            **/maintenance.html
+            **/uploads/**
+
+      - name: List public_html AFTER deploy
+        run: |
+          echo "Contenu de public_html après déploiement :"
+          curl -sS --ftp-ssl -k --list-only \
+            "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/public_html/" \
+            --user "u398408214:${{ secrets.FTP_PASS }}" || true

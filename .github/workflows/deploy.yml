@@ -6,6 +6,11 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  FTP_HOST: 145.79.20.5
+  FTP_USER: u398408214
+  REMOTE_DIR: /domains/scm-garnier-infirmier.fr/public_html
+
 jobs:
   deploy:
     name: Deploy SCM Garnier to Hostinger
@@ -14,54 +19,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List public_html BEFORE deploy
-        run: |
-          echo "Contenu de public_html avant déploiement :"
-          curl -sS --ftp-ssl -k --list-only \
-            "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/public_html/" \
-            --user "u398408214:${{ secrets.FTP_PASS }}" || true
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
-      - name: Remove maintenance placeholder files
+      - name: List remote, remove maintenance page, upload site
+        env:
+          FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
-          BASE="ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/public_html/"
-          DIR="/domains/scm-garnier-infirmier.fr/public_html"
-          for f in index.html index.htm maintenance.html maintenance.htm maintenance.php coming-soon.html .maintenance; do
-            echo "Suppression de $f (si présent)..."
-            curl -sS --ftp-ssl -k \
-              --user "u398408214:${{ secrets.FTP_PASS }}" \
-              -Q "DELE $DIR/$f" \
-              "$BASE" && echo "  -> supprimé" || echo "  -> absent / ignoré"
-          done
-
-      - name: Clean non-production files
-        run: |
-          rm -rf docs/ .github/ scripts/setup-secrets.sh
-          rm -f preview.html env.example.php .env.deploy maintenance.html
-
-      - name: Deploy via FTP (no clean-slate, preserves env.php & uploads)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: 145.79.20.5
-          username: u398408214
-          password: ${{ secrets.FTP_PASS }}
-          server-dir: /domains/scm-garnier-infirmier.fr/public_html/
-          port: 21
-          protocol: ftps
-          security: loose
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/docs/**
-            **/.env.deploy
-            **/env.php
-            **/env.example.php
-            **/preview.html
-            **/maintenance.html
-            **/uploads/**
-
-      - name: List public_html AFTER deploy
-        run: |
-          echo "Contenu de public_html après déploiement :"
-          curl -sS --ftp-ssl -k --list-only \
-            "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/public_html/" \
-            --user "u398408214:${{ secrets.FTP_PASS }}" || true
+          timeout 300 lftp -u "$FTP_USER,$FTP_PASS" "$FTP_HOST" <<LFTP
+          set ssl:verify-certificate no
+          set net:timeout 20
+          set net:max-retries 2
+          set net:reconnect-interval-base 5
+          cd $REMOTE_DIR
+          echo ">>> AVANT - contenu de public_html :"
+          cls -l
+          echo ">>> Suppression des fichiers de maintenance (si presents) :"
+          rm -f index.html
+          rm -f index.htm
+          rm -f maintenance.html
+          rm -f maintenance.htm
+          rm -f maintenance.php
+          rm -f coming-soon.html
+          rm -f .maintenance
+          echo ">>> Upload du vrai site (sans effacer env.php ni uploads/) :"
+          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob maintenance.html --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
+          echo ">>> APRES - contenu de public_html :"
+          cls -l
+          bye
+          LFTP

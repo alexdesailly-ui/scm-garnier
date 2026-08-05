@@ -20,3 +20,10 @@ Thumbs.db
 
 # FTP sync state
 .ftp-deploy-sync-state.json
+
+# Composer
+/vendor/
+composer.lock
+
+# Build artifacts
+/build/

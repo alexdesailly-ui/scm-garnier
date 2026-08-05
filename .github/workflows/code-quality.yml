@@ -1,0 +1,113 @@
+name: Revue de code (qualité)
+
+# Revue de code automatisée — INFORMATIVE (ne bloque pas le déploiement).
+# Outils open source : PHPStan (bugs), PHP_CodeSniffer (PSR-12), SonarQube,
+# reviewdog (commentaires inline sur les Pull Requests).
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - claude/populate-scm-garnier-repo-vM4Lj
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  phpstan:
+    name: PHPStan (analyse statique)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Run PHPStan
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          mkdir -p build
+          # PHPStan sort en non-zéro s'il trouve des erreurs : on ne casse pas le job (revue informative).
+          ./vendor/bin/phpstan analyse --no-progress --error-format=checkstyle > build/phpstan-checkstyle.xml || true
+          if [ "$EVENT" = "pull_request" ]; then REPORTER=github-pr-review; else REPORTER=github-check; fi
+          reviewdog -f=checkstyle -name=PHPStan -reporter=$REPORTER -filter-mode=nofilter -level=info < build/phpstan-checkstyle.xml || true
+
+      - name: Upload PHPStan report
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpstan-checkstyle
+          path: build/phpstan-checkstyle.xml
+          if-no-files-found: ignore
+
+  phpcs:
+    name: PHP_CodeSniffer (PSR-12)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Run PHP_CodeSniffer
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          ./vendor/bin/phpcs -q --report=checkstyle > phpcs-checkstyle.xml || true
+          if [ "$EVENT" = "pull_request" ]; then REPORTER=github-pr-review; else REPORTER=github-check; fi
+          reviewdog -f=checkstyle -name=PHP_CodeSniffer -reporter=$REPORTER -filter-mode=nofilter -level=info < phpcs-checkstyle.xml || true
+
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - name: Vérifier la présence du token Sonar
+        id: guard
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=SonarQube ignoré::Le secret SONAR_TOKEN n'est pas configuré. Ajoutez-le (Settings > Secrets > Actions) et, pour un SonarQube auto-hébergé, SONAR_HOST_URL. SonarCloud : SONAR_HOST_URL=https://sonarcloud.io."
+          else
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.guard.outputs.has_token == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        if: steps.guard.outputs.has_token == 'true'
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

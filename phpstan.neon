@@ -1,0 +1,24 @@
+parameters:
+    level: 5
+    phpVersion: 80100
+    paths:
+        - src
+        - includes
+        - admin
+        - api
+        - index.php
+        - contact.php
+        - prevention.php
+        - rendez-vous.php
+        - mentions-legales.php
+        - setup.php
+        - install.php
+        - scripts
+    excludePaths:
+        - vendor/*
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    # Existing findings are catalogued here so the CI focuses on NEW issues.
+    # Regenerate after a batch with: composer phpstan -- --generate-baseline
+    includes:
+        - phpstan-baseline.neon

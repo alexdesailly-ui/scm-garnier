@@ -15,8 +15,11 @@
     Require all denied
 </FilesMatch>
 
-# Block env.php explicitly
+# Block env.php and auto-generated secrets explicitly
 <Files "env.php">
+    Require all denied
+</Files>
+<Files "env.secrets.php">
     Require all denied
 </Files>
 

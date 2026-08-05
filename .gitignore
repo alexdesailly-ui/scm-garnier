@@ -27,3 +27,6 @@ composer.lock
 
 # Build artifacts
 /build/
+
+# Secrets générés automatiquement
+env.secrets.php

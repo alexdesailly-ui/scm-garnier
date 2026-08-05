@@ -6,6 +6,7 @@
  */
 
 require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/defaults.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -171,20 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$admin_email, $hash]);
 
             // Insert default settings
-            $defaults = [
-                'site_name'        => $site_name,
-                'site_description' => 'Cabinet infirmier à Nice - Soins à domicile et au cabinet',
-                'address'          => '123 Avenue Jean Médecin, 06000 Nice',
-                'phone'            => '',
-                'email'            => $admin_email,
-                'facebook_url'     => '',
-                'instagram_url'    => '',
-                'whatsapp_number'  => '',
-                'opening_hours'    => 'Lundi - Vendredi : 7h00 - 19h00 | Samedi : 8h00 - 12h00',
-                'slot_duration'    => '30',
-                'max_advance_days' => '30',
-                'rgpd_text'        => 'Vos données personnelles sont collectées uniquement pour la gestion de vos rendez-vous et sont conservées conformément au RGPD. Vous pouvez exercer vos droits d\'accès, de rectification et de suppression en nous contactant.',
-            ];
+            $defaults = defaultSettings($site_name, $admin_email);
             $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
             foreach ($defaults as $key => $value) {
                 $stmt->execute([$key, $value]);
@@ -192,10 +180,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insert default available slots (Mon-Fri 7:00-19:00, Sat 8:00-12:00)
             $slotStmt = $pdo->prepare("INSERT INTO available_slots (nurse_id, day_of_week, start_time, end_time) VALUES (NULL, ?, ?, ?)");
-            for ($d = 1; $d <= 5; $d++) {
-                $slotStmt->execute([$d, '07:00', '19:00']);
+            foreach (defaultSlots() as [$day, $start, $end]) {
+                $slotStmt->execute([$day, $start, $end]);
             }
-            $slotStmt->execute([6, '08:00', '12:00']);
 
             $success = true;
         } catch (PDOException $e) {

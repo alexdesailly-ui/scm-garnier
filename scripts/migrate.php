@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/src/autoload.php';
+require_once dirname(__DIR__) . '/includes/defaults.php';
 
 use SCM\Core\App;
 use SCM\Migration\MigrationRunner;
@@ -168,26 +169,16 @@ if (empty($results)) {
 $count = (int) $pdo->query("SELECT COUNT(*) FROM settings")->fetchColumn();
 if ($count === 0) {
     echo "\n--- Seeding defaults ---\n";
-    $defaults = [
-        'site_name'        => 'Cabinet Infirmier Garnier',
-        'site_description' => 'Cabinet infirmier à Nice - Soins à domicile et au cabinet',
-        'address'          => '123 Avenue Jean Médecin, 06000 Nice',
-        'phone'            => '',
-        'email'            => 'contact@cabinet-garnier.fr',
-        'opening_hours'    => 'Lundi - Vendredi : 7h00 - 19h00 | Samedi : 8h00 - 12h00',
-        'slot_duration'    => '30',
-        'max_advance_days' => '30',
-    ];
+    $defaults = defaultSettings();
     $stmt = $pdo->prepare("INSERT IGNORE INTO settings (setting_key, setting_value) VALUES (?, ?)");
     foreach ($defaults as $k => $v) {
         $stmt->execute([$k, $v]);
     }
 
     $slotStmt = $pdo->prepare("INSERT INTO available_slots (nurse_id, day_of_week, start_time, end_time) VALUES (NULL, ?, ?, ?)");
-    for ($d = 1; $d <= 5; $d++) {
-        $slotStmt->execute([$d, '07:00', '19:00']);
+    foreach (defaultSlots() as [$d, $start, $end]) {
+        $slotStmt->execute([$d, $start, $end]);
     }
-    $slotStmt->execute([6, '08:00', '12:00']);
     echo "  [OK] Default settings + time slots\n";
 }
 

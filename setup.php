@@ -9,6 +9,8 @@
  * SUPPRIMER CE FICHIER APRÈS INSTALLATION
  */
 
+require_once __DIR__ . '/includes/defaults.php';
+
 session_start();
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -222,26 +224,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === '2') {
 
         if (empty($errors)) {
             // Insert default settings
-            $defaults = [
-                'site_name'        => 'Cabinet Infirmier Garnier',
-                'site_description' => 'Cabinet infirmier à Nice - Soins à domicile et au cabinet',
-                'address'          => '123 Avenue Jean Médecin, 06000 Nice',
-                'phone'            => '',
-                'email'            => $adminEmail,
-                'facebook_url'     => '',
-                'instagram_url'    => '',
-                'whatsapp_number'  => '',
-                'opening_hours'    => 'Lundi - Vendredi : 7h00 - 19h00 | Samedi : 8h00 - 12h00',
-                'slot_duration'    => '30',
-                'max_advance_days' => '30',
-            ];
+            $defaults = defaultSettings('Cabinet Infirmier Garnier', $adminEmail);
             $stmt = $pdo->prepare("INSERT IGNORE INTO settings (setting_key, setting_value) VALUES (?, ?)");
             foreach ($defaults as $k => $v) $stmt->execute([$k, $v]);
 
             // Insert default slots
             $slotStmt = $pdo->prepare("INSERT INTO available_slots (nurse_id, day_of_week, start_time, end_time) VALUES (NULL, ?, ?, ?)");
-            for ($d = 1; $d <= 5; $d++) $slotStmt->execute([$d, '07:00', '19:00']);
-            $slotStmt->execute([6, '08:00', '12:00']);
+            foreach (defaultSlots() as [$d, $start, $end]) $slotStmt->execute([$d, $start, $end]);
 
             $success = true;
         }

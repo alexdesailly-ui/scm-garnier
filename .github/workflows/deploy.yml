@@ -22,7 +22,7 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
-      - name: List remote, remove maintenance page, upload site
+      - name: List remote and upload site
         env:
           FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
@@ -34,16 +34,11 @@ jobs:
           cd $REMOTE_DIR
           echo ">>> AVANT - contenu de public_html :"
           cls -l
-          echo ">>> Suppression des fichiers de maintenance (si presents) :"
+          echo ">>> Retrait d'un eventuel index.html masquant index.php :"
           rm -f index.html
           rm -f index.htm
-          rm -f maintenance.html
-          rm -f maintenance.htm
-          rm -f maintenance.php
-          rm -f coming-soon.html
-          rm -f .maintenance
-          echo ">>> Upload du vrai site (sans effacer env.php ni uploads/) :"
-          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob maintenance.html --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
+          echo ">>> Upload du site (sans effacer env.php, uploads/, ni le mode maintenance) :"
+          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob .maintenance --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
           echo ">>> APRES - contenu de public_html :"
           cls -l
           bye

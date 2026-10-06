@@ -27,6 +27,21 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # ===== Mode maintenance (interrupteur) =====
+    # Actif tant que le fichier ".maintenance" existe dans public_html.
+    # Activer / désactiver : workflow GitHub "Mode maintenance (on/off)",
+    # ou en créant / supprimant ce fichier via le Gestionnaire de fichiers hPanel.
+    RewriteCond %{DOCUMENT_ROOT}/.maintenance -f
+    RewriteCond %{REQUEST_URI} !/maintenance\.html$
+    RewriteRule .* - [R=503,L]
+    # (Optionnel) pour garder l'accès au vrai site depuis VOTRE IP pendant la
+    # maintenance, décommentez et renseignez l'IP ci-dessous (et commentez la
+    # règle ci-dessus) :
+    # RewriteCond %{DOCUMENT_ROOT}/.maintenance -f
+    # RewriteCond %{REMOTE_ADDR} !=123.123.123.123
+    # RewriteCond %{REQUEST_URI} !/maintenance\.html$
+    # RewriteRule .* - [R=503,L]
+
     # Block direct access to includes
     RewriteRule ^includes/ - [F,L]
     RewriteRule ^admin/includes/ - [F,L]
@@ -45,6 +60,9 @@
 
     DirectoryIndex index.php
 </IfModule>
+
+# Page servie pendant le mode maintenance (statut 503)
+ErrorDocument 503 /maintenance.html
 
 # Disable directory listing
 Options -Indexes

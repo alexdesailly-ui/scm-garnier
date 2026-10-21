@@ -15,14 +15,32 @@
     Require all denied
 </FilesMatch>
 
-# Block env.php explicitly
+# Block env.php and auto-generated secrets explicitly
 <Files "env.php">
+    Require all denied
+</Files>
+<Files "env.secrets.php">
     Require all denied
 </Files>
 
 # Rewrite rules (LiteSpeed compatible)
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # ===== Mode maintenance (interrupteur) =====
+    # Actif tant que le fichier ".maintenance" existe dans public_html.
+    # Activer / désactiver : workflow GitHub "Mode maintenance (on/off)",
+    # ou en créant / supprimant ce fichier via le Gestionnaire de fichiers hPanel.
+    RewriteCond %{DOCUMENT_ROOT}/.maintenance -f
+    RewriteCond %{REQUEST_URI} !/maintenance\.html$
+    RewriteRule .* - [R=503,L]
+    # (Optionnel) pour garder l'accès au vrai site depuis VOTRE IP pendant la
+    # maintenance, décommentez et renseignez l'IP ci-dessous (et commentez la
+    # règle ci-dessus) :
+    # RewriteCond %{DOCUMENT_ROOT}/.maintenance -f
+    # RewriteCond %{REMOTE_ADDR} !=123.123.123.123
+    # RewriteCond %{REQUEST_URI} !/maintenance\.html$
+    # RewriteRule .* - [R=503,L]
 
     # Block direct access to includes
     RewriteRule ^includes/ - [F,L]
@@ -35,16 +53,6 @@
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # ── Maintenance mode (site en travaux) ──────────────────────────────
-    # Pour DÉSACTIVER la maintenance : commenter (préfixer par #) les 5
-    # lignes ci-dessous. L'accès admin reste disponible pendant la maintenance.
-    RewriteCond %{REQUEST_URI} !^/maintenance\.php$ [NC]
-    RewriteCond %{REQUEST_URI} !^/admin/ [NC]
-    RewriteCond %{REQUEST_URI} !^/assets/ [NC]
-    RewriteCond %{REQUEST_URI} !^/uploads/ [NC]
-    RewriteRule ^ /maintenance.php [L]
-    # ────────────────────────────────────────────────────────────────────
-
     # Remove .php extension (clean URLs)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME}.php -f
@@ -52,6 +60,9 @@
 
     DirectoryIndex index.php
 </IfModule>
+
+# Page servie pendant le mode maintenance (statut 503)
+ErrorDocument 503 /maintenance.html
 
 # Disable directory listing
 Options -Indexes

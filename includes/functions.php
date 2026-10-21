@@ -37,29 +37,20 @@ function verifyCSRF(string $token): bool {
 }
 
 /**
- * Get a site setting
+ * Get a site setting.
+ *
+ * All settings for the current tenant are loaded once per request (a single
+ * query via getAllSettings) and served from an in-memory cache, instead of
+ * issuing one query per key.
  */
 function getSetting(string $key, string $default = ''): string {
     static $cache = [];
-    $tid = App::instance()->tenantId();
-    $cacheKey = ($tid ?? 'null') . ':' . $key;
-    if (isset($cache[$cacheKey])) return $cache[$cacheKey];
-
-    try {
-        $pdo = getDB();
-        if ($tid !== null) {
-            $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ? AND tenant_id = ?");
-            $stmt->execute([$key, $tid]);
-        } else {
-            $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
-            $stmt->execute([$key]);
-        }
-        $val = $stmt->fetchColumn();
-        $cache[$cacheKey] = $val !== false ? $val : $default;
-    } catch (PDOException $e) {
-        $cache[$cacheKey] = $default;
+    $scope = App::instance()->tenantId() ?? 'null';
+    if (!isset($cache[$scope])) {
+        $cache[$scope] = getAllSettings();
     }
-    return $cache[$cacheKey];
+    $val = $cache[$scope][$key] ?? null;
+    return $val !== null ? (string) $val : $default;
 }
 
 /**

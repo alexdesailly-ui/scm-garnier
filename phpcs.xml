@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="SCM Garnier">
+    <description>Standard de code PSR-12 pour le site Cabinet Infirmier Garnier.</description>
+
+    <!-- Fichiers analysés -->
+    <file>src</file>
+    <file>includes</file>
+    <file>admin</file>
+    <file>api</file>
+    <file>index.php</file>
+    <file>contact.php</file>
+    <file>prevention.php</file>
+    <file>rendez-vous.php</file>
+    <file>mentions-legales.php</file>
+
+    <!-- Exclusions -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/uploads/*</exclude-pattern>
+    <exclude-pattern>*/assets/*</exclude-pattern>
+
+    <!-- Options -->
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="parallel" value="4"/>
+    <arg value="sp"/>
+    <arg name="extensions" value="php"/>
+
+    <!-- Règle de base : PSR-12 -->
+    <rule ref="PSR12">
+        <!-- Les vues mêlent HTML et PHP : on tolère le HTML inline hors des balises PHP -->
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+</ruleset>

@@ -62,4 +62,10 @@ final class TenantRepository
 
         return array_map(fn(array $row) => Tenant::fromRow($row), $rows);
     }
+
+    public function updatePlan(int $tenantId, string $plan): void
+    {
+        $stmt = $this->db->pdo()->prepare('UPDATE tenants SET plan = ? WHERE id = ?');
+        $stmt->execute([$plan, $tenantId]);
+    }
 }

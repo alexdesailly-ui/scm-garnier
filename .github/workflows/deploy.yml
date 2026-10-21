@@ -3,8 +3,13 @@ name: Deploy to Hostinger
 on:
   push:
     branches:
-      - claude/nursing-clinic-website-4lu80
       - main
+  workflow_dispatch:
+
+env:
+  FTP_HOST: 145.79.20.5
+  FTP_USER: u398408214
+  REMOTE_DIR: /domains/scm-garnier-infirmier.fr/public_html
 
 jobs:
   deploy:
@@ -14,34 +19,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List FTP root directory
-        run: |
-          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
-          echo "---"
-          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/domains/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
-          echo "---"
-          curl -s --ftp-ssl -k --list-only "ftp://145.79.20.5/domains/scm-garnier-infirmier.fr/" --user "u398408214:${{ secrets.FTP_PASS }}" || true
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
-      - name: Clean non-production files
+      - name: List remote and upload site
+        env:
+          FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
-          rm -rf docs/ .github/ scripts/setup-secrets.sh
-          rm -f preview.html env.example.php .env.deploy
-
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: 145.79.20.5
-          username: u398408214
-          password: ${{ secrets.FTP_PASS }}
-          server-dir: /domains/scm-garnier-infirmier.fr/public_html/
-          port: 21
-          protocol: ftps
-          security: loose
-          dangerous-clean-slate: true
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/docs/**
-            **/.env.deploy
-            **/preview.html
-            **/env.example.php
+          timeout 300 lftp -u "$FTP_USER,$FTP_PASS" "$FTP_HOST" <<LFTP
+          set ssl:verify-certificate no
+          set net:timeout 20
+          set net:max-retries 2
+          set net:reconnect-interval-base 5
+          cd $REMOTE_DIR
+          echo ">>> AVANT - contenu de public_html :"
+          cls -l
+          echo ">>> Retrait d'un eventuel index.html masquant index.php :"
+          rm -f index.html
+          rm -f index.htm
+          echo ">>> Upload du site (sans effacer env.php, uploads/, ni le mode maintenance) :"
+          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob .maintenance --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
+          echo ">>> APRES - contenu de public_html :"
+          cls -l
+          bye
+          LFTP

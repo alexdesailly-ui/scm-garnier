@@ -25,7 +25,7 @@ $email = getSetting('email', '');
             <ul>
                 <li><strong>Raison sociale :</strong> SCM Garnier - Cabinet Infirmier</li>
                 <li><strong>Adresse :</strong> <?= e($address) ?></li>
-                <li><strong>Téléphone :</strong> <?= e($phone) ?></li>
+<?php if ($phone): ?><li><strong>Téléphone :</strong> <?= e($phone) ?></li><?php endif; ?>
                 <li><strong>Email :</strong> <?= e($email) ?></li>
                 <li><strong>Numéro ADELI :</strong> [Numéro ADELI]</li>
                 <li><strong>Hébergeur :</strong> Hostinger International Ltd, 61 Lordou Vironos Street, 6023 Larnaca, Chypre</li>

@@ -9,6 +9,24 @@ startSecureSession();
 TenantMiddleware::handle();
 SubscriptionMiddleware::handle();
 
+/**
+ * Drop the session if it was created against a different tenant than the one
+ * currently resolved from the request. Without this, an authenticated user
+ * could pivot their session onto another tenant's data by changing the host
+ * or, in debug mode, the ?tenant= query string (P0-3).
+ */
+$currentTid = App::instance()->tenantId();
+if (!empty($_SESSION['user_id']) && isset($_SESSION['tenant_id'])
+    && $_SESSION['tenant_id'] !== $currentTid) {
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $p = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+    }
+    session_destroy();
+    session_start();
+}
+
 function requireAuth(): void {
     if (empty($_SESSION['user_id']) || empty($_SESSION['user_role'])) {
         header('Location: /admin/login.php');

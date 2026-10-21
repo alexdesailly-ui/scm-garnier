@@ -44,10 +44,15 @@ final class TenantResolver
             }
         }
 
-        // 3. Try slug from query string (?tenant=garnier) — dev/testing convenience
-        $slugParam = $_GET['tenant'] ?? '';
-        if ($slugParam !== '') {
-            return $this->repo->findBySlug($slugParam);
+        // 3. Try slug from query string — dev/testing only. Allowing this in
+        // production lets an authenticated user pivot their session onto another
+        // tenant's context just by tacking ?tenant=foo on the URL (cross-tenant
+        // session hijack vector, P0-3).
+        if (defined('APP_DEBUG') && APP_DEBUG) {
+            $slugParam = $_GET['tenant'] ?? '';
+            if ($slugParam !== '') {
+                return $this->repo->findBySlug($slugParam);
+            }
         }
 
         return null;

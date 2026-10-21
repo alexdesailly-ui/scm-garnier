@@ -1,0 +1,44 @@
+name: Deploy to Hostinger (staging)
+
+# Déploiement staging pour valider un lot de refactoring avant la prod.
+# Cible un sous-dossier /staging/ ; ne touche jamais le site de production.
+
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+
+env:
+  FTP_HOST: 145.79.20.5
+  FTP_USER: u398408214
+  REMOTE_DIR: /domains/scm-garnier-infirmier.fr/public_html/staging
+
+jobs:
+  deploy:
+    name: Deploy SCM Garnier staging to Hostinger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Upload site to staging (preserves env.php & uploads)
+        env:
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          timeout 300 lftp -u "$FTP_USER,$FTP_PASS" "$FTP_HOST" <<LFTP
+          set ssl:verify-certificate no
+          set net:timeout 20
+          set net:max-retries 2
+          set net:reconnect-interval-base 5
+          mkdir -p $REMOTE_DIR
+          cd $REMOTE_DIR
+          echo ">>> Upload du site vers staging :"
+          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob maintenance.html --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
+          echo ">>> APRES - contenu de staging :"
+          cls -l
+          bye
+          LFTP

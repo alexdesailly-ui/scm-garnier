@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace SCM\Model;
 
+use SCM\Middleware\QuotaMiddleware;
+
 final class Appointment extends BaseModel
 {
     protected string $table = 'appointments';
 
     public function create(array $data): array
     {
+        QuotaMiddleware::enforce('appointments_per_month');
+
         $ref = 'RDV-' . strtoupper(bin2hex(random_bytes(4)));
         $tid = $this->tenantId();
 
@@ -38,6 +42,8 @@ final class Appointment extends BaseModel
             $data['home_visit'] ?? 0,
             $data['consent'] ?? 0,
         ]);
+
+        QuotaMiddleware::record('appointments_per_month');
 
         return [
             'id' => (int) $this->db->pdo()->lastInsertId(),

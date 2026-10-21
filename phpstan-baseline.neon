@@ -1,0 +1,5 @@
+# PHPStan baseline — pre-existing findings catalogued so CI flags only NEW issues.
+# Regenerate after each refactor batch with:
+#   composer phpstan -- --generate-baseline
+parameters:
+    ignoreErrors: []

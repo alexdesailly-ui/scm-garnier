@@ -1,0 +1,68 @@
+name: Mode maintenance (on/off)
+
+# Active ou désactive le mode maintenance du site de production, à la demande.
+# - "enable"  : envoie maintenance.html + .htaccess et crée le fichier témoin .maintenance
+# - "disable" : supprime le fichier témoin .maintenance (le vrai site revient)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Activer ou désactiver le mode maintenance"
+        type: choice
+        options:
+          - enable
+          - disable
+        default: enable
+
+env:
+  FTP_HOST: 145.79.20.5
+  FTP_USER: u398408214
+  REMOTE_DIR: /domains/scm-garnier-infirmier.fr/public_html
+
+jobs:
+  toggle:
+    name: "Maintenance : ${{ inputs.mode }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Activer la maintenance
+        if: ${{ inputs.mode == 'enable' }}
+        env:
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          touch .maintenance
+          timeout 180 lftp -u "$FTP_USER,$FTP_PASS" "$FTP_HOST" <<LFTP
+          set ssl:verify-certificate no
+          set net:timeout 20
+          set net:max-retries 2
+          cd $REMOTE_DIR
+          put maintenance.html -o maintenance.html
+          put .htaccess -o .htaccess
+          put .maintenance -o .maintenance
+          echo ">>> Mode maintenance ACTIVE"
+          cls -l
+          bye
+          LFTP
+
+      - name: Désactiver la maintenance
+        if: ${{ inputs.mode == 'disable' }}
+        env:
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          timeout 180 lftp -u "$FTP_USER,$FTP_PASS" "$FTP_HOST" <<LFTP
+          set ssl:verify-certificate no
+          set net:timeout 20
+          set net:max-retries 2
+          cd $REMOTE_DIR
+          rm -f .maintenance
+          put .htaccess -o .htaccess
+          echo ">>> Mode maintenance DESACTIVE"
+          cls -l
+          bye
+          LFTP

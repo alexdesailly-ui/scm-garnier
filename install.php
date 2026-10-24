@@ -8,6 +8,25 @@
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/defaults.php';
 
+// Garde : plus aucune installation possible dès qu'un administrateur existe.
+// Sans elle, toute personne atteignant ce fichier pouvait se créer un compte admin.
+try {
+    $adminCount = (int) getDB()->query("SELECT COUNT(*) FROM users WHERE role = 'admin'")->fetchColumn();
+} catch (PDOException $e) {
+    if ($e->getCode() !== '42S02') { // 42S02 = table absente, donc première installation
+        http_response_code(503);
+        exit('Installation indisponible.');
+    }
+    $adminCount = 0;
+} catch (Throwable $e) {
+    http_response_code(503);
+    exit('Installation indisponible.');
+}
+if ($adminCount > 0) {
+    http_response_code(404);
+    exit;
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

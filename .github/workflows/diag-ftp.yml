@@ -1,0 +1,46 @@
+name: Diagnostic FTP (lecture seule)
+
+# Branche jetable : teste uniquement la connexion FTP, n'envoie et ne supprime rien.
+on:
+  push:
+    branches:
+      - diag/ftp-deploy
+
+permissions:
+  contents: read
+
+jobs:
+  ftp:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      FTP_HOST: 145.79.20.5
+      FTP_USER: u398408214
+      REMOTE_DIR: /domains/scm-garnier-infirmier.fr/public_html
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+      - name: Test connexion
+        env:
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          set +e
+          os="$(. /etc/os-release; echo "$PRETTY_NAME") | $(lftp --version | head -1)"
+          if [ -z "$FTP_PASS" ]; then echo "::error title=${{ matrix.os }}::Secret FTP_PASS vide | $os"; exit 1; fi
+          timeout 120 lftp -d -u "$FTP_USER,$FTP_PASS" "$FTP_HOST" > out.txt 2>&1 <<LFTP
+          set ssl:verify-certificate no
+          set net:timeout 20
+          set net:max-retries 2
+          set net:reconnect-interval-base 5
+          cd $REMOTE_DIR
+          cls -1
+          bye
+          LFTP
+          rc=$?
+          resume=$(grep -vi 'PASS' out.txt | grep -E '^(<---|\*\*\*\*)|Login|cd:|Fatal|refused|timed out|certificate|Access|530|550|421|Not connected|setup.php|install.php|\.htaccess' | tail -25 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          niveau=notice; [ $rc -ne 0 ] && niveau=error
+          echo "::${niveau} title=${{ matrix.os }} rc=$rc::$os%0A$resume"
+          exit 0

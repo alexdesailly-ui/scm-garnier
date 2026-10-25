@@ -36,8 +36,11 @@ jobs:
           set net:reconnect-interval-base 5
           mkdir -p $REMOTE_DIR
           cd $REMOTE_DIR
+          echo ">>> Retrait des scripts d'installation :"
+          rm -f install.php
+          rm -f setup.php
           echo ">>> Upload du site vers staging :"
-          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob maintenance.html --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
+          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob maintenance.html --exclude-glob scripts/setup-secrets.sh --exclude-glob install.php --exclude-glob setup.php ./ $REMOTE_DIR/
           echo ">>> APRES - contenu de staging :"
           cls -l
           bye

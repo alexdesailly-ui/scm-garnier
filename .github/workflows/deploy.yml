@@ -37,8 +37,11 @@ jobs:
           echo ">>> Retrait d'un eventuel index.html masquant index.php :"
           rm -f index.html
           rm -f index.htm
+          echo ">>> Retrait des scripts d'installation (jamais en ligne apres la premiere install) :"
+          rm -f install.php
+          rm -f setup.php
           echo ">>> Upload du site (sans effacer env.php, uploads/, ni le mode maintenance) :"
-          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob .maintenance --exclude-glob scripts/setup-secrets.sh ./ $REMOTE_DIR/
+          mirror --reverse --verbose --exclude-glob .git*/ --exclude-glob .git* --exclude-glob .github/ --exclude-glob docs/ --exclude-glob uploads/ --exclude-glob env.php --exclude-glob env.example.php --exclude-glob .env.deploy --exclude-glob preview.html --exclude-glob .maintenance --exclude-glob scripts/setup-secrets.sh --exclude-glob install.php --exclude-glob setup.php ./ $REMOTE_DIR/
           echo ">>> APRES - contenu de public_html :"
           cls -l
           bye

@@ -49,6 +49,12 @@
     # Block access to docs/ (GitHub Pages only)
     RewriteRule ^docs/ - [F,L]
 
+    # Scripts CLI (migrations, cron) : jamais appelables depuis le web.
+    # Le cron hPanel les lance en ligne de commande, il n'est pas concerné.
+    RewriteRule ^scripts/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+    RewriteRule ^(README\.md|composer\.(json|lock)|phpstan\.neon|phpcs\.xml|sonar-project\.properties)$ - [F,L]
+
     # Force HTTPS (Hostinger SSL)
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

@@ -16,18 +16,12 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// If env.php already exists and DB works, redirect to install.php
+// Garde : dès que env.php existe, le site est configuré et setup.php ne fait plus rien.
+// Avant : si la base tombait, n'importe qui pouvait réécrire env.php avec ses propres
+// identifiants MySQL et de nouvelles clés de chiffrement, puis se créer un compte admin.
 if (file_exists(__DIR__ . '/env.php')) {
-    try {
-        $env = require __DIR__ . '/env.php';
-        $dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $env['DB_HOST'], $env['DB_NAME']);
-        new PDO($dsn, $env['DB_USER'], $env['DB_PASS']);
-        // DB works, check if users table exists and has data
-        header('Location: /install.php');
-        exit;
-    } catch (Exception $e) {
-        // env.php exists but DB doesn't work, continue setup
-    }
+    http_response_code(404);
+    exit;
 }
 
 $step = $_POST['step'] ?? '1';
